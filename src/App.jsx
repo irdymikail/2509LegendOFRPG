@@ -30,6 +30,7 @@ const fetchWithBackoff = async (prompt, retries = 5) => {
 const DICT = {
   id: {
     play: "Mulai Bermain", settings: "Pengaturan", lang: "Bahasa", sfxOn: "Suara Nyala", sfxOff: "Suara Mati",
+    bgmOn: "Musik Nyala", bgmOff: "Musik Mati",
     prep: "Persiapan Pahlawan", namePh: "Nama Pahlawan", startAdv: "Mulai Petualangan", class: "Kelas Pahlawan",
     outfitStyle: "Gaya Pakaian", outfitColor: "Warna Pakaian", skinColor: "Warna Kulit", hairEye: "Rambut & Mata",
     hair: "Rambut", eye: "Mata", atk: "SERANG!", skillBook: "Buku Skill", newItem: "Item Baru", takeCont: "Ambil & Lanjutkan",
@@ -40,6 +41,7 @@ const DICT = {
   },
   en: {
     play: "Play Game", settings: "Settings", lang: "Language", sfxOn: "Sound On", sfxOff: "Sound Off",
+    bgmOn: "Music On", bgmOff: "Music Off",
     prep: "Hero Preparation", namePh: "Hero Name", startAdv: "Start Adventure", class: "Hero Class",
     outfitStyle: "Outfit Style", outfitColor: "Outfit Color", skinColor: "Skin Color", hairEye: "Hair & Eyes",
     hair: "Hair", eye: "Eyes", atk: "ATTACK!", skillBook: "Skill Book", newItem: "New Item", takeCont: "Take & Continue",
@@ -255,9 +257,16 @@ export default function App() {
   const [showInventory, setShowInventory] = useState(false);
   const [invFilter, setInvFilter] = useState('Semua');
   const [isMuted, setIsMuted] = useState(true);
+  const [isBgmMuted, setIsBgmMuted] = useState(true);
   const [lang, setLang] = useState('id'); 
 
   const t = (key) => DICT[lang][key] || key;
+
+  const loc = (obj) => {
+    if (!obj) return "";
+    if (typeof obj === 'string') return obj;
+    return obj[lang] || obj.id || "";
+  };
 
   const [animState, setAnimState] = useState({ player: '', enemy: '' });
   const [floatingTexts, setFloatingTexts] = useState([]); 
@@ -287,18 +296,41 @@ export default function App() {
   const [essayAnswer, setEssayAnswer] = useState("");
   const [matchingState, setMatchingState] = useState({ left: [], right: [], selectedL: null, selectedR: null, matched: [] });
 
-  const [droppedItem, setDroppedItem] = useState(null);
+  const [droppedItems, setDroppedItems] = useState([]);
   const [droppedSkill, setDroppedSkill] = useState(null);
   
+  const [screenFlash, setScreenFlash] = useState(null);
+  const [screenShake, setScreenShake] = useState(false);
+
   const [cooldowns, setCooldowns] = useState({});
   const [activeBuffs, setActiveBuffs] = useState({ doubleDmg: false, autoCorrect: false, tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false });
 
   const [stats, setStats] = useState({ qAnswered: 0, qCorrect: 0, qWrong: 0, dmgDealt: 0, dmgReceived: 0, highestDmg: 0, currentStreak: 0, maxStreak: 0, enemiesDefeated: 0, itemsCollected: 0, skillsUsed: 0 });
   
   const logContainerRef = useRef(null);
+  const bgmRef = useRef(null);
 
   useEffect(() => { if (logContainerRef.current) logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight; }, [logs]);
-  useEffect(() => { if (!isMuted && gameState === 'BATTLE') { initAudio(); toggleBGM(true); } else toggleBGM(false); return () => toggleBGM(false); }, [isMuted, gameState]);
+  
+  // Audio Initialization & MP3 Loop
+  useEffect(() => {
+    bgmRef.current = new Audio('src/bgm.mp3');
+    bgmRef.current.loop = true;
+    bgmRef.current.volume = 0.3;
+    return () => {
+      if (bgmRef.current) bgmRef.current.pause();
+    };
+  }, []);
+
+  // BGM Play/Pause logic based on Game State & Mute
+  useEffect(() => {
+    if (!bgmRef.current) return;
+    if (gameState === 'BATTLE' && !isBgmMuted) {
+      bgmRef.current.play().catch(e => console.log("Auto-play prevented", e));
+    } else {
+      bgmRef.current.pause();
+    }
+  }, [gameState, isBgmMuted]);
 
   useEffect(() => {
     if (achQueue.length > 0 && !activePopup) {
@@ -310,6 +342,7 @@ export default function App() {
   }, [achQueue, activePopup, isMuted]);
 
   const handleAudioToggle = () => { initAudio(); playSFX('click', !isMuted); setIsMuted(!isMuted); };
+  const handleBgmToggle = () => { setIsBgmMuted(!isBgmMuted); playSFX('click', isMuted); };
   const handleHover = () => playSFX('hover', isMuted);
   const handleClick = () => playSFX('click', isMuted);
 
@@ -324,6 +357,19 @@ export default function App() {
     const id = Date.now() + Math.random();
     setFloatingTexts(prev => [...prev, { id, target, text, type }]);
     setTimeout(() => { setFloatingTexts(prev => prev.filter(ft => ft.id !== id)); }, 1500); 
+  };
+
+  const spawnParticles = (target, type) => {
+    const particles = [];
+    const count = 8;
+    for(let i=0; i<count; i++) {
+       const tx = (Math.random() - 0.5) * 200;
+       const ty = (Math.random() - 0.5) * 200 - 50; 
+       const id = Date.now() + Math.random();
+       particles.push({ id, target, text: type === 'blood' ? '🩸' : '✨', type: 'particle', tx, ty });
+    }
+    setFloatingTexts(prev => [...prev, ...particles]);
+    setTimeout(() => { setFloatingTexts(prev => prev.filter(ft => !particles.find(p => p.id === ft.id))); }, 600);
   };
 
   const triggerBossTaunt = async (enemyData, playerData) => {
@@ -354,10 +400,10 @@ export default function App() {
     });
     
     setQPools({
-      mcq: shuffleArray([...QUESTIONS_DB.mcq, ...QUESTIONS_DB.mcq]),
-      tf: shuffleArray([...QUESTIONS_DB.tf, ...QUESTIONS_DB.tf]),
-      essay: shuffleArray([...QUESTIONS_DB.essay, ...QUESTIONS_DB.essay]),
-      matching: shuffleArray([...QUESTIONS_DB.matching, ...QUESTIONS_DB.matching])
+      mcq: shuffleArray([...QUESTIONS_DB.mcq]),
+      tf: shuffleArray([...QUESTIONS_DB.tf]),
+      essay: shuffleArray([...QUESTIONS_DB.essay]),
+      matching: shuffleArray([...QUESTIONS_DB.matching])
     });
 
     setCurrentEnemyIndex(0); const firstEnemy = ENEMIES[0]; setEnemy({ ...firstEnemy });
@@ -367,6 +413,7 @@ export default function App() {
     setActiveBuffs({ tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false, doubleDmg: false, autoCorrect: false });
     setStats({ qAnswered: 0, qCorrect: 0, qWrong: 0, dmgDealt: 0, dmgReceived: 0, highestDmg: 0, currentStreak: 0, maxStreak: 0, enemiesDefeated: 0, itemsCollected: 0, skillsUsed: 0 });
     setUnlockedAchs([]); setAchQueue([]); setActivePopup(null);
+    setDroppedItems([]);
     setGameState('BATTLE');
   };
 
@@ -389,7 +436,10 @@ export default function App() {
     if (roll < 0.25) type = 'tf'; else if (roll < 0.5) type = 'essay'; else if (roll < 0.75) type = 'matching';
 
     if (qPools[type].length === 0) {
-      if (qPools.mcq.length > 0) type = 'mcq'; else if (qPools.tf.length > 0) type = 'tf';
+      if (qPools.mcq.length > 0) type = 'mcq'; 
+      else if (qPools.tf.length > 0) type = 'tf';
+      else if (qPools.essay.length > 0) type = 'essay';
+      else if (qPools.matching.length > 0) type = 'matching';
       else {
         setQPools({ mcq: shuffleArray([...QUESTIONS_DB.mcq]), tf: shuffleArray([...QUESTIONS_DB.tf]), essay: shuffleArray([...QUESTIONS_DB.essay]), matching: shuffleArray([...QUESTIONS_DB.matching]) });
         type = 'mcq';
@@ -458,11 +508,17 @@ export default function App() {
     setTimeout(() => {
       setAnimState(prev => ({...prev, player: 'transition-transform duration-300 ease-out'}));
       setAnimState(prev => ({...prev, enemy: 'animate-shake filter brightness-150 drop-shadow-[0_0_30px_red]'})); playSFX('hit', isMuted);
-      addFloatingText('enemy', `-${finalDmg}`, isCrit ? 'crit' : 'damage'); addFloatingText('enemy', `✨`, 'buff');
+      
+      setScreenFlash('white');
+      setScreenShake(true);
+
+      addFloatingText('enemy', `-${finalDmg}`, isCrit ? 'crit' : 'damage'); 
+      spawnParticles('enemy', 'sparkle');
       
       addLog(logMsg, "success"); updateStat('dmgDealt', v => v + finalDmg); updateStat('highestDmg', v => Math.max(v, finalDmg));
 
       setTimeout(() => {
+         setScreenFlash(null); setScreenShake(false);
          setAnimState(prev => ({...prev, enemy: 'transition-all duration-300'})); 
          const newEnemyHp = enemy.hp - finalDmg;
          if (newEnemyHp <= 0) {
@@ -492,12 +548,19 @@ export default function App() {
 
     setTimeout(() => {
       setAnimState(prev => ({...prev, enemy: 'transition-transform duration-300 ease-out'}));
-      setAnimState(prev => ({...prev, player: 'animate-shake filter sepia hue-rotate-[300deg] saturate-[5] drop-shadow-[0_0_30px_red]'})); playSFX('hit', isMuted);
+      setAnimState(prev => ({...prev, player: 'animate-shake filter sepia hue-rotate-[300deg] saturate-[5] drop-shadow-[0_0_30px_red]'})); 
+      playSFX('hit', isMuted);
+      
+      setScreenFlash('red');
+      setScreenShake(true);
+
       addFloatingText('player', `-${damage}`, 'damage');
+      spawnParticles('player', 'blood');
       
       addLog(`🩸 -${damage} DMG.`, "damage"); updateStat('dmgReceived', v => v + damage);
       
       setTimeout(() => {
+        setScreenFlash(null); setScreenShake(false);
         setAnimState(prev => ({...prev, player: 'transition-all duration-300'}));
         const newHp = player.hp - damage; 
         if (newHp <= 0) { setPlayer(prev => ({ ...prev, hp: 0 })); setGameState('LOSE'); } 
@@ -514,8 +577,15 @@ export default function App() {
     setActiveBuffs({ tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false, doubleDmg: false, autoCorrect: false });
     
     const availableItems = ITEMS_DATABASE.filter(item => item.minTier <= currentEnemyIndex);
-    const dropped = availableItems[Math.floor(Math.random() * availableItems.length)];
-    setDroppedItem({ ...dropped, instanceId: Math.random().toString(36).substr(2, 9) });
+    const dropCount = enemy.type === 'Raja Iblis' ? 3 : (enemy.type === 'Komando' ? 2 : 1);
+    const drops = [];
+    for (let i = 0; i < dropCount; i++) {
+       if (availableItems.length > 0) {
+          const dropped = availableItems[Math.floor(Math.random() * availableItems.length)];
+          drops.push({ ...dropped, instanceId: Math.random().toString(36).substr(2, 9) });
+       }
+    }
+    setDroppedItems(drops);
     
     if (enemy.type !== 'Kroco') {
       const avail = SKILL_TYPES.filter(s => !player.skills.some(ps => ps.id === s.id));
@@ -526,8 +596,8 @@ export default function App() {
   };
 
   const collectLootAndProceed = (learnSkill = false) => {
-    handleClick(); updateStat('itemsCollected', v => v + 1);
-    const newInventory = [...player.inventory, droppedItem]; let newSkills = player.skills;
+    handleClick(); updateStat('itemsCollected', v => v + droppedItems.length);
+    const newInventory = [...player.inventory, ...droppedItems]; let newSkills = player.skills;
     if (learnSkill && droppedSkill) { newSkills = [...player.skills, droppedSkill]; }
     setPlayer(prev => ({ ...prev, inventory: newInventory, skills: newSkills })); 
     
@@ -645,19 +715,29 @@ export default function App() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-[#050505] to-[#050505] animate-pulse-slow"></div>
         <div className="relative z-10 flex flex-col items-center animate-pop-in px-4 w-full">
           <div className="text-5xl md:text-7xl mb-4 animate-float"><FlaskIcon /></div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 mb-8 md:mb-12 tracking-widest drop-shadow-[0_10px_10px_rgba(234,88,12,0.5)] uppercase animate-shine bg-[length:200%_auto] text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 mb-2 md:mb-4 tracking-widest drop-shadow-[0_10px_10px_rgba(234,88,12,0.5)] uppercase animate-shine bg-[length:200%_auto] text-center">
             Chem Legend Of RPG
           </h1>
-          <div className="flex flex-col gap-4 w-full max-w-sm">
+          <div className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8 md:mb-12 drop-shadow-md text-center">
+            GAME MADE BY IRDY(25) dan FALAN(09)
+          </div>
+          <div className="flex flex-col gap-4 w-full max-w-sm px-4 md:px-0">
             <button onMouseEnter={handleHover} onClick={() => {handleClick(); setGameState('CUSTOMIZATION');}} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xl md:text-2xl py-4 md:py-5 rounded-2xl shadow-[0_10px_25px_rgba(59,130,246,0.4)] transition-all duration-300 transform hover:-translate-y-2 active:scale-95 uppercase tracking-widest flex justify-center items-center gap-3">
               <Play size={20} /> {t('play')}
             </button>
             <div className="bg-[#111]/80 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-[#333] flex flex-col gap-3 md:gap-4 shadow-xl mt-2 md:mt-4">
               <div className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-1"><Settings size={14}/> {t('settings')}</div>
+              
               <button onMouseEnter={handleHover} onClick={handleAudioToggle} className="flex justify-between items-center w-full bg-[#1a1a1a] hover:bg-[#222] p-3 md:p-4 rounded-xl border border-[#333] transition-all group active:scale-95">
                 <span className="font-bold text-xs md:text-sm text-slate-300 group-hover:text-white">{isMuted ? t('sfxOff') : t('sfxOn')}</span>
                 {isMuted ? <VolumeX className="text-red-500" size={18}/> : <Volume2 className="text-green-500 animate-pulse" size={18}/>}
               </button>
+
+              <button onMouseEnter={handleHover} onClick={handleBgmToggle} className="flex justify-between items-center w-full bg-[#1a1a1a] hover:bg-[#222] p-3 md:p-4 rounded-xl border border-[#333] transition-all group active:scale-95">
+                <span className="font-bold text-xs md:text-sm text-slate-300 group-hover:text-white">{isBgmMuted ? t('bgmOff') : t('bgmOn')}</span>
+                {isBgmMuted ? <VolumeX className="text-red-500" size={18}/> : <Volume2 className="text-blue-400 animate-pulse" size={18}/>}
+              </button>
+
               <button onMouseEnter={handleHover} onClick={() => {handleClick(); setLang(lang === 'id' ? 'en' : 'id')}} className="flex justify-between items-center w-full bg-[#1a1a1a] hover:bg-[#222] p-3 md:p-4 rounded-xl border border-[#333] transition-all group active:scale-95">
                 <span className="font-bold text-xs md:text-sm text-slate-300 group-hover:text-white">{t('lang')}</span>
                 <span className="font-black text-xs md:text-sm text-blue-400 flex items-center gap-2"><Globe size={16}/> {lang === 'id' ? 'Indonesia' : 'English'}</span>
@@ -674,7 +754,7 @@ export default function App() {
     const maxPossibleDmg = Math.max(...Object.values(CLASSES).map(c => c.dmg));
 
     return (
-      <div className="absolute inset-0 flex flex-col bg-[#0a0f1a] text-white p-4 font-sans overflow-hidden">
+      <div className="absolute inset-0 flex flex-col bg-[#0a0f1a] text-white p-4 md:p-6 font-sans overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f1a] via-[#050505] to-[#1e1b4b] animate-gradient-xy"></div>
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] animate-pulse-slow pointer-events-none"></div>
         
@@ -715,7 +795,7 @@ export default function App() {
                  <div className="h-1.5 w-full bg-[#161f36] rounded-full overflow-hidden shadow-inner"><div className="h-full bg-gradient-to-r from-red-600 to-orange-400 rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(249,115,22,0.8)]" style={{width: `${(CLASSES[player.className].dmg / maxPossibleDmg) * 100}%`}}></div></div>
                </div>
             </div>
-            <div className="mt-4 md:mt-6 text-slate-500 italic text-[10px] md:text-xs text-center relative z-10 shrink-0">{CLASSES[player.className].desc[lang]}</div>
+            <div className="mt-4 md:mt-6 text-slate-500 italic text-[10px] md:text-xs text-center relative z-10 shrink-0">{loc(CLASSES[player.className].desc)}</div>
           </div>
 
           <div className="flex-1 bg-[#111827]/90 backdrop-blur-xl border border-slate-800/80 rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-8 shadow-2xl flex flex-col min-h-0">
@@ -810,22 +890,31 @@ export default function App() {
                  <div className="text-cyan-300 text-[9px] md:text-xs font-black uppercase tracking-widest flex items-center gap-1 md:gap-2 mb-1">
                     <Star size={12} className="animate-spin-slow"/> {t('achUnlocked')}
                  </div>
-                 <div className="text-white font-black text-sm md:text-2xl tracking-wide drop-shadow-lg leading-tight">{activePopup.name[lang] || activePopup.name}</div>
-                 <div className="text-blue-200 text-[10px] md:text-xs font-bold mt-1 leading-tight">{activePopup.desc[lang] || activePopup.desc}</div>
+                 <div className="text-white font-black text-sm md:text-2xl tracking-wide drop-shadow-lg leading-tight">{loc(activePopup.name)}</div>
+                 <div className="text-blue-200 text-[10px] md:text-xs font-bold mt-1 leading-tight">{loc(activePopup.desc)}</div>
               </div>
            </div>
         </div>
       )}
 
       {/* Center Action Area */}
-      <div className="flex-1 flex flex-col relative min-w-0 z-10">
+      <div className={`flex-1 flex flex-col relative min-w-0 z-10 ${screenShake ? 'animate-shake' : ''}`}>
         
+        {/* Full Screen Flash Overlay */}
+        <div className={`pointer-events-none fixed inset-0 z-[150] transition-opacity duration-75 ${screenFlash ? 'opacity-80' : 'opacity-0'} ${screenFlash === 'red' ? 'bg-red-600' : 'bg-white'}`} />
+
         {/* Floating Combat Texts */}
         <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">
           {floatingTexts.map(ft => (
-            <div key={ft.id} className={`absolute text-4xl md:text-5xl font-black drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] animate-float-up-fade 
+            <div key={ft.id} 
+              style={ft.type === 'particle' ? { '--tx': `${ft.tx}px`, '--ty': `${ft.ty}px` } : {}}
+              className={`absolute font-black drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] 
               ${ft.target === 'player' ? 'bottom-[25%] left-1/2 -translate-x-1/2' : 'top-[25%] left-1/2 -translate-x-1/2'}
-              ${ft.type === 'damage' ? 'text-red-500' : ft.type === 'crit' ? 'text-orange-400 scale-125' : ft.type === 'heal' ? 'text-green-400' : 'text-blue-400'}`}>
+              ${ft.type === 'damage' ? 'text-red-500 text-4xl md:text-5xl animate-float-up-fade' : 
+                ft.type === 'crit' ? 'text-orange-400 text-5xl md:text-6xl scale-125 animate-float-up-fade' : 
+                ft.type === 'heal' ? 'text-green-400 text-4xl md:text-5xl animate-float-up-fade' : 
+                ft.type === 'particle' ? 'text-2xl md:text-3xl animate-particle' :
+                'text-blue-400 text-4xl md:text-5xl animate-float-up-fade'}`}>
               {ft.text}
             </div>
           ))}
@@ -868,10 +957,9 @@ export default function App() {
           </div>
         </div>
 
-        {/* BATTLE STAGE (Perfectly scrollable wrapping structure) */}
+        {/* BATTLE STAGE */}
         <div className="flex-1 overflow-y-auto w-full relative z-20 min-h-0 custom-scrollbar">
           
-          {/* Sticky Enemy HP Bar */}
           <div className="sticky top-0 z-30 w-full max-w-sm mx-auto bg-[#050505]/95 backdrop-blur-md pt-2 pb-3 mb-2 md:mb-4 rounded-b-2xl md:rounded-b-3xl border-b border-[#222] shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
             <div className="px-4 md:px-6 w-full">
               <div className="flex justify-between text-[9px] md:text-[10px] text-slate-400 font-black mb-1 uppercase tracking-widest">
@@ -883,10 +971,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* INNER WRAPPER for centering without overflow clipping */}
           <div className="min-h-full flex flex-col items-center justify-center py-4 md:py-8 px-2 w-full max-w-sm mx-auto relative gap-4 md:gap-8">
             
-            {/* ENEMY */}
             <div className="flex flex-col items-center w-full relative shrink-0">
               <div className="text-center mb-2 md:mb-3 bg-[#0a0a0a]/50 backdrop-blur-sm p-2 md:p-3 rounded-xl md:rounded-2xl border border-[#222] shadow-xl">
                 <h2 className="text-xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg"><span className="text-lg md:text-2xl drop-shadow-none">👺</span> {enemy?.name}</h2>
@@ -900,7 +986,6 @@ export default function App() {
 
             <div className="text-2xl md:text-4xl font-black text-[#1a1a1a] select-none drop-shadow-lg opacity-50 shrink-0">VS</div>
 
-            {/* PLAYER */}
             <div className="flex flex-col items-center w-full relative shrink-0">
               <div className={`mb-3 md:mb-4 relative w-24 h-24 md:w-32 md:h-32 ${animState.player}`}>
                 <div className="absolute inset-0 bg-blue-500/10 blur-[30px] rounded-full -z-10"></div>
@@ -1069,7 +1154,7 @@ export default function App() {
                 <div key={region.id} className="flex flex-col items-center w-full">
                   <div className={`w-full border-2 rounded-2xl md:rounded-3xl p-5 md:p-10 relative transition-all duration-700 ease-out hover:-translate-y-2 ${isRegionUnlocked ? region.color : 'border-[#1a1a1a] bg-[#0a0a0a] opacity-50 grayscale'}`}>
                     <h3 className={`text-lg md:text-2xl font-black mb-1 md:mb-2 flex items-center gap-2 md:gap-3 ${isRegionUnlocked ? region.textHead : 'text-slate-500'} tracking-widest uppercase drop-shadow-md`}>
-                       {isRegionUnlocked ? '🗺️' : '🔒'} {region.name[lang] || region.name}
+                       {isRegionUnlocked ? '🗺️' : '🔒'} {loc(region.name)}
                     </h3>
                     <p className={`text-[10px] md:text-sm font-bold mb-4 md:mb-8 ${isRegionUnlocked ? 'text-slate-400' : 'text-slate-600'}`}>{region.desc}</p>
                     
@@ -1137,8 +1222,8 @@ export default function App() {
                    <div key={ach.id} className={`p-4 md:p-6 rounded-xl md:rounded-2xl border-2 flex items-center gap-4 md:gap-6 transition-all duration-500 ease-out hover:-translate-y-1 ${isUnlocked ? 'bg-[#0a0a0a] border-blue-900/50 shadow-[0_5px_15px_rgba(59,130,246,0.1)]' : 'bg-[#050505] border-[#111] opacity-50 grayscale'}`}>
                      <div className={`text-2xl md:text-4xl p-3 md:p-4 rounded-xl md:rounded-2xl shadow-inner shrink-0 ${isUnlocked ? 'bg-blue-950/40 text-blue-400' : 'bg-[#111] text-slate-600'}`}>{ach.icon}</div>
                      <div className="flex-1">
-                       <h3 className={`font-black text-xs md:text-xl mb-1 uppercase tracking-wider ${isUnlocked ? 'text-white' : 'text-slate-600'}`}>{ach.name[lang] || ach.name}</h3>
-                       <p className={`text-[10px] md:text-sm font-bold ${isUnlocked ? 'text-slate-400' : 'text-slate-700'}`}>{ach.desc[lang] || ach.desc}</p>
+                       <h3 className={`font-black text-xs md:text-xl mb-1 uppercase tracking-wider ${isUnlocked ? 'text-white' : 'text-slate-600'}`}>{loc(ach.name)}</h3>
+                       <p className={`text-[10px] md:text-sm font-bold ${isUnlocked ? 'text-slate-400' : 'text-slate-700'}`}>{loc(ach.desc)}</p>
                      </div>
                      <div className="pr-2 md:pr-4 shrink-0">
                        {!isUnlocked && <Lock className="text-slate-700" size={20}/>}
@@ -1242,25 +1327,25 @@ export default function App() {
       {/* Reward Modal */}
       {gameState === 'REWARD' && (
         <div className="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 z-50">
-          <div className="bg-[#0a0a0a] p-6 md:p-12 rounded-[2rem] md:rounded-3xl max-w-xl w-full border border-orange-700 shadow-[0_0_80px_rgba(234,88,12,0.2)] text-center animate-pop-in relative overflow-hidden flex flex-col items-center">
-            <h2 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-500 mb-6 md:mb-8 uppercase tracking-widest drop-shadow-lg relative z-10">Loot!</h2>
-            <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 mb-8 relative z-10 w-full">
-              {droppedItem && (
-                 <div className={`flex-1 bg-[#111] border ${getRarityColor(droppedItem.rarity).replace('bg-', 'border-')} p-4 md:p-6 rounded-2xl md:rounded-3xl flex flex-col items-center shadow-xl transform hover:scale-105 transition-transform duration-300 relative overflow-hidden shrink-0`}>
+          <div className="bg-[#0a0a0a] p-6 md:p-12 rounded-[2rem] md:rounded-3xl max-w-3xl w-full border border-orange-700 shadow-[0_0_80px_rgba(234,88,12,0.2)] text-center animate-pop-in relative overflow-hidden flex flex-col items-center max-h-[90vh]">
+            <h2 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-500 mb-6 md:mb-8 uppercase tracking-widest drop-shadow-lg relative z-10 shrink-0">Loot!</h2>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 relative z-10 w-full overflow-y-auto custom-scrollbar p-2">
+              {droppedItems.map((item, idx) => (
+                 <div key={idx} className={`w-32 md:w-48 bg-[#111] border ${getRarityColor(item.rarity).replace('bg-', 'border-')} p-4 md:p-6 rounded-2xl md:rounded-3xl flex flex-col items-center shadow-xl transform hover:scale-105 transition-transform duration-300 relative overflow-hidden shrink-0`}>
                     <span className="text-[9px] md:text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2 md:mb-3">{t('newItem')}</span>
-                    <div className="text-4xl md:text-6xl mb-2 md:mb-4 drop-shadow-xl animate-float">{droppedItem.icon}</div>
-                    <div className="font-black text-sm md:text-lg text-white mb-1">{droppedItem.name}</div>
+                    <div className="text-4xl md:text-6xl mb-2 md:mb-4 drop-shadow-xl animate-float">{item.icon}</div>
+                    <div className="font-black text-xs md:text-base text-white mb-1 line-clamp-2">{item.name}</div>
                     <div className="flex flex-wrap justify-center gap-1.5 md:gap-2 mt-2">
-                       {droppedItem.stats.hp && <span className="text-[8px] md:text-[10px] font-black text-green-400 bg-green-950/40 border border-green-900/50 px-2 md:px-3 py-0.5 md:py-1 rounded-lg">+{droppedItem.stats.hp} HP</span>}
-                       {droppedItem.stats.dmg && <span className="text-[8px] md:text-[10px] font-black text-orange-400 bg-orange-950/40 border border-orange-900/50 px-2 md:px-3 py-0.5 md:py-1 rounded-lg">+{droppedItem.stats.dmg} DMG</span>}
+                       {item.stats.hp && <span className="text-[8px] md:text-[10px] font-black text-green-400 bg-green-950/40 border border-green-900/50 px-2 md:px-3 py-0.5 md:py-1 rounded-lg">+{item.stats.hp} HP</span>}
+                       {item.stats.dmg && <span className="text-[8px] md:text-[10px] font-black text-orange-400 bg-orange-950/40 border border-orange-900/50 px-2 md:px-3 py-0.5 md:py-1 rounded-lg">+{item.stats.dmg} DMG</span>}
                     </div>
                  </div>
-              )}
+              ))}
               {droppedSkill && (
-                 <div className="flex-1 bg-[#111] border border-blue-600/50 p-4 md:p-6 rounded-2xl md:rounded-3xl flex flex-col items-center shadow-[0_0_30px_rgba(37,99,235,0.15)] transform hover:scale-105 transition-transform duration-300 relative overflow-hidden shrink-0">
+                 <div className="w-32 md:w-48 bg-[#111] border border-blue-600/50 p-4 md:p-6 rounded-2xl md:rounded-3xl flex flex-col items-center shadow-[0_0_30px_rgba(37,99,235,0.15)] transform hover:scale-105 transition-transform duration-300 relative overflow-hidden shrink-0">
                     <span className="text-[9px] md:text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2 md:mb-3">{t('skillBook')}</span>
                     <div className="text-4xl md:text-6xl mb-2 md:mb-4 drop-shadow-xl animate-float" style={{animationDelay: '0.5s'}}>📘</div>
-                    <div className="font-black text-sm md:text-lg text-blue-400 mb-1">{droppedSkill.name}</div>
+                    <div className="font-black text-xs md:text-base text-blue-400 mb-1">{droppedSkill.name}</div>
                  </div>
               )}
             </div>
@@ -1318,6 +1403,8 @@ export default function App() {
         .animate-shake { animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         @keyframes floatUpFade { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -30px) scale(1.3); opacity: 1; } 100% { transform: translate(-50%, -100px) scale(1); opacity: 0; } }
         .animate-float-up-fade { animation: floatUpFade 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes particleBurst { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1.5) rotate(45deg); opacity: 0; } }
+        .animate-particle { animation: particleBurst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes gradientXY { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         .animate-gradient-xy { background-size: 200% 200%; animation: gradientXY 15s ease infinite; }
         @keyframes shine { 100% { transform: translateX(200%); } }
