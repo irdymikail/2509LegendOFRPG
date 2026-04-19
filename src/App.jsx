@@ -314,19 +314,34 @@ export default function App() {
   
   // Audio Initialization & MP3 Loop
   useEffect(() => {
-    bgmRef.current = new Audio('src/bgm.mp3');
+    // 💡 PERBAIKAN 1: Kita panggil langsung dari root public (/bgm.mp3)
+    bgmRef.current = new Audio('/bgm.mp3');
     bgmRef.current.loop = true;
-    bgmRef.current.volume = 0.3;
+    bgmRef.current.volume = 0.3; // Volume BGM diatur 30% agar tidak menutupi SFX
+    
     return () => {
-      if (bgmRef.current) bgmRef.current.pause();
+      if (bgmRef.current) {
+        bgmRef.current.pause();
+        bgmRef.current.src = "";
+      }
     };
   }, []);
 
   // BGM Play/Pause logic based on Game State & Mute
   useEffect(() => {
     if (!bgmRef.current) return;
-    if (gameState === 'BATTLE' && !isBgmMuted) {
-      bgmRef.current.play().catch(e => console.log("Auto-play prevented", e));
+    
+    // 💡 PERBAIKAN 2: Mainkan musik kapan pun selama tidak di-mute
+    if (!isBgmMuted) {
+      // Kita harus "menangkap" Promise dari play() untuk mencegah error Autoplay Policy
+      const playPromise = bgmRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn("Autoplay diblokir oleh browser. Pengguna harus mengklik halaman terlebih dahulu.", error);
+          // Jika browser memblokir, kita otomatis matikan toggle agar tidak terjadi bug UI
+          setIsBgmMuted(true);
+        });
+      }
     } else {
       bgmRef.current.pause();
     }
