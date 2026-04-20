@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Sword, Heart, Skull, Zap, Map, Trophy, ArrowUpCircle, Check, Lock, Crosshair, Flame, Star, Target, Briefcase, Shirt, Gem, Package, Volume2, VolumeX, Sparkles, Globe, Play, Settings, HelpCircle } from 'lucide-react';
 
 // --- GEMINI API INTEGRATION (Only for Alchemist Hints now) ---
-const apiKey = "AIzaSyClBg6_IzSWcYjBsckbtwobcDm1X1RBWiw"; 
+const apiKey = ""; 
 
 const fetchWithBackoff = async (prompt, retries = 5) => {
   const delays = [1000, 2000, 4000, 8000, 16000];
@@ -439,8 +439,10 @@ export default function App() {
       
       setEnemyTaunt(selectedTaunt);
       addLog(`🗣️ ${enemyData.name}: "${selectedTaunt}"`, 'error');
-      setTimeout(() => setEnemyTaunt(null), 5000); 
-    }, 600);
+      setTimeout(() => {
+        setEnemyTaunt(prev => prev === selectedTaunt ? null : prev); 
+      }, 3000); 
+    }, 400);
   };
 
   const getAlchemistHint = async () => {
@@ -597,12 +599,24 @@ export default function App() {
          const newEnemyHp = enemy.hp - finalDmg;
          if (newEnemyHp <= 0) {
            setEnemy(prev => ({ ...prev, hp: 0 })); playSFX('victory', isMuted); updateStat('enemiesDefeated', v => v + 1); 
+           
+           // RNG Heal & DMG Increase on Kill
            const healPercent = Math.floor(Math.random() * 16) + 5; 
            const rngHeal = Math.floor(totalStats.maxHp * (healPercent / 100));
-           setPlayer(p => ({...p, hp: Math.min(totalStats.maxHp, p.hp + rngHeal)}));
-           addFloatingText('player', `+${rngHeal} HP`, 'heal'); addLog(`✨ Pulih ${rngHeal} HP.`, 'buff');
+           const rngDmg = Math.floor(Math.random() * 15) + 1; // RNG 1-15 DMG
+
+           setPlayer(p => ({...p, hp: Math.min(totalStats.maxHp, p.hp + rngHeal), baseDmg: p.baseDmg + rngDmg}));
+           
+           addFloatingText('player', `+${rngHeal} HP`, 'heal'); 
+           setTimeout(() => addFloatingText('player', `+${rngDmg} DMG`, 'buff'), 400);
+
+           addLog(`✨ Menyerap energi! +${rngHeal} HP & +${rngDmg} DMG permanen.`, 'buff');
            setTimeout(() => handleEnemyDeath(), 1200);
-         } else { setEnemy(prev => ({ ...prev, hp: newEnemyHp })); setTimeout(() => processEnemyTurn(), 1000); }
+         } else { 
+           setEnemy(prev => ({ ...prev, hp: newEnemyHp })); 
+           triggerEnemyTaunt(enemy, player); // Monster taunts after surviving an attack!
+           setTimeout(() => processEnemyTurn(), 1000); 
+         }
       }, 300);
     }, 150);
   };
@@ -1550,8 +1564,8 @@ export default function App() {
              </div>
 
              <div className="flex flex-col gap-3 w-full max-w-md shrink-0 pb-10">
-                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
-                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="flex-1 bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
              </div>
           </div>
         </div>
