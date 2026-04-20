@@ -115,8 +115,21 @@ const MAP_REGIONS = [
   { id: 'region4', name: {id:'Tahta Kehancuran', en:'Throne of Ruin'}, desc: 'Tahap 4', color: 'border-purple-900 bg-purple-950/40', textHead: 'text-purple-400', startIndex: 9, endIndex: 9 },
 ];
 
+// Logika yang akan kita tanamkan di dalam JSX:
+{enemy?.sprite ? (
+   <img 
+     src={enemy.sprite} 
+     alt={enemy.name} 
+     className="w-40 h-40 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]"
+   />
+) : (
+   <div className="text-[100px] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]">
+     {enemy?.emoji}
+   </div>
+)}
+
 const ENEMIES = [
-  { name: 'Slime', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
+  { name: 'Slime', emoji: '🦠', sprite: '/slime.png', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
   { name: 'Goblin', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
   { name: 'Goblin Mage', emoji: '🧙‍♂️', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
   { name: 'Wolf', emoji: '🐺', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
