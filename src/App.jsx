@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Sword, Heart, Skull, Zap, Map, Trophy, ArrowUpCircle, Check, Lock, Crosshair, Flame, Star, Target, Briefcase, Shirt, Gem, Package, Volume2, VolumeX, Sparkles, Globe, Play, Settings, HelpCircle } from 'lucide-react';
 
 // --- GEMINI API INTEGRATION (Only for Alchemist Hints now) ---
-const apiKey = ""; 
+const apiKey = "AIzaSyClBg6_IzSWcYjBsckbtwobcDm1X1RBWiw"; 
 
 const fetchWithBackoff = async (prompt, retries = 5) => {
   const delays = [1000, 2000, 4000, 8000, 16000];
