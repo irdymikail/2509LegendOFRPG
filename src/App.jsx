@@ -118,13 +118,13 @@ const MAP_REGIONS = [
 const ENEMIES = [
   { name: 'slime', sprite: '/slime.png', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
   { name: 'goblin', sprite: '/goblin.png', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
-  { name: 'skeleborg', sprite: '/skeleborg.png', emoji: '💀🤖', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
+  { name: 'vampire', sprite: '/vampire.png', emoji: '🧛‍♂️', hp: 80, maxHp: 80, dmg: 15, type: 'Kroco' },
   { name: 'zombie', sprite: '/zombie.png', emoji: '🧟‍♂️', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
-  { name: 'vampire', sprite: '/vampire.png', emoji: '🧛‍♂️', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
   { name: 'gargoyle', sprite: '/gargoyle.png', emoji: '👹🦇', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
   { name: 'durantree', sprite: '/durantree.png', emoji: '🌳👹', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
   { name: 'pinedemon', sprite: '/pinedemon.png', emoji: '👿🌲', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
   { name: 'deerclops', sprite: '/deerclops.png', emoji: '🦌👁️', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
+  { name: 'skeleborg', sprite: '/skeleborg.png', emoji: '💀🤖', hp: 40, maxHp: 40, dmg: 12, type: 'Komando' },
   { name: 'slothfuldragon', sprite: '/slothfuldragon.png', emoji: '🐉😴', hp: 400, maxHp: 400, dmg: 35, type: 'Raja Iblis' }
 ];
 
@@ -1071,33 +1071,37 @@ export default function App() {
               </div>
               
               <div className={`leading-none mb-2 relative ${animState.enemy}`}>
-                {/* SPEECH BUBBLE */}
-                {enemyTaunt && (
-                  <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
-                    <p className="text-[10px] md:text-xs font-black leading-tight text-center">
-                      {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
-                    </p>
-                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
-                  </div>
-                )}
-                
-                {/* Sprite area with aura */}
-                <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10 animate-pulse"></div>
-                
-                {enemy?.sprite ? (
-                  <img 
-                    src={enemy.sprite} 
-                    alt={enemy.name} 
-                    className="w-48 h-48 md:w-60 md:h-60 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float"
-                    onError={(e) => {
-                      // Fallback: sembunyikan gambar yang rusak, tampilkan emoji
-                      e.target.style.display = 'none';
-                      const emojiSpan = e.target.parentElement.querySelector('.fallback-emoji');
-                      if (emojiSpan) emojiSpan.style.display = 'block';
-                    }}
-                  />
-                ) : null}
-                <span className={`fallback-emoji ${enemy?.sprite ? 'hidden' : 'block'} text-[80px] md:text-[100px] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float`}>{enemy?.emoji}</span>
+                {/* 💡 TRIK REACT: key={enemy?.name} memaksa animasi diputar ulang setiap monster ganti */}
+                <div key={enemy?.name} className="animate-spawn-in relative flex flex-col items-center justify-center">
+                  
+                  {/* SPEECH BUBBLE */}
+                  {enemyTaunt && (
+                    <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
+                      <p className="text-[10px] md:text-xs font-black leading-tight text-center">
+                        {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
+                      </p>
+                      <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
+                    </div>
+                  )}
+                  
+                  {/* Sprite area with aura */}
+                  <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10 animate-pulse"></div>
+                  
+                  {enemy?.sprite ? (
+                    <img 
+                      src={enemy.sprite} 
+                      alt={enemy.name} 
+                      className="w-48 h-48 md:w-60 md:h-60 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float"
+                      onError={(e) => {
+                        // Fallback: sembunyikan gambar yang rusak, tampilkan emoji
+                        e.target.style.display = 'none';
+                        const emojiSpan = e.target.parentElement.querySelector('.fallback-emoji');
+                        if (emojiSpan) emojiSpan.style.display = 'block';
+                      }}
+                    />
+                  ) : null}
+                  <span className={`fallback-emoji ${enemy?.sprite ? 'hidden' : 'block'} text-[80px] md:text-[100px] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float`}>{enemy?.emoji}</span>
+                </div>
               </div>
             </div>
 
@@ -1634,6 +1638,15 @@ export default function App() {
         .animate-shine { animation: shine 3s infinite linear; }
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
         .animate-spin-slow { animation: spinSlow 3s linear infinite; }
+
+        /* 💡 ANIMASI BARU: SPAWN MUSUH EPIC */
+        @keyframes spawnIn {
+          0% { transform: scale(0.3) translateY(-100px); opacity: 0; filter: brightness(2.5) contrast(1.5); }
+          60% { transform: scale(1.1) translateY(20px); opacity: 1; filter: brightness(1.5) contrast(1.2); }
+          80% { transform: scale(0.95) translateY(-5px); }
+          100% { transform: scale(1) translateY(0); filter: brightness(1) contrast(1); }
+        }
+        .animate-spawn-in { animation: spawnIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         
         .flask-icon { width: 1em; height: 1em; display: inline-block; background-color: currentColor; mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 2v7.31l-5.69 9.85c-.5.86-.14 1.94.75 2.45.28.16.6.24.94.24h12c1.1 0 2-.9 2-2 0-.34-.08-.66-.24-.94L14 9.31V2h2V0H8v2h2zm-2 15.69L10.31 13h3.38L16 17.69v.31H8v-.31z"/></svg>') no-repeat center; -webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 2v7.31l-5.69 9.85c-.5.86-.14 1.94.75 2.45.28.16.6.24.94.24h12c1.1 0 2-.9 2-2 0-.34-.08-.66-.24-.94L14 9.31V2h2V0H8v2h2zm-2 15.69L10.31 13h3.38L16 17.69v.31H8v-.31z"/></svg>') no-repeat center; }
         .flask-container { font-size: 80px; color: #f97316; filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.8)); margin-bottom: 1rem; animation: float 4s ease-in-out infinite; }
