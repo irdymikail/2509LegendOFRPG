@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Sword, Heart, Skull, Zap, Map, Trophy, ArrowUpCircle, Check, Lock, Crosshair, Flame, Star, Target, Briefcase, Shirt, Gem, Package, Volume2, VolumeX, Sparkles, Globe, Play, Settings, HelpCircle } from 'lucide-react';
 
-// --- GEMINI API INTEGRATION ---
+// --- GEMINI API INTEGRATION (Only for Alchemist Hints now) ---
 const apiKey = "AIzaSyClBg6_IzSWcYjBsckbtwobcDm1X1RBWiw"; 
 
 const fetchWithBackoff = async (prompt, retries = 5) => {
@@ -13,7 +13,7 @@ const fetchWithBackoff = async (prompt, retries = 5) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          systemInstruction: { parts: [{ text: "Anda adalah asisten AI di dalam sebuah game RPG Kimia." }] }
+          systemInstruction: { parts: [{ text: "Anda adalah asisten AI ahli sains di dalam sebuah game RPG." }] }
         })
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,7 +37,8 @@ const DICT = {
     map: "Peta", inv: "Tas", stats: "Pencapaian", win: "KEMENANGAN", lose: "GAME OVER", tryAgain: "Coba Lagi",
     playAgain: "Main Lagi", equip: "Pasang", unequip: "Lepas", emptyBag: "Tas Kosong", mapTitle: "Peta Dunia",
     hintAlchemist: "Petunjuk Alkemis AI", answer: "Jawab", true: "Benar", false: "Salah", battleLog: "Log Pertarungan",
-    back: "Kembali", achUnlocked: "Pencapaian Baru!"
+    back: "Kembali", achUnlocked: "Pencapaian Baru!", summary: "Ringkasan Petualangan", 
+    accuracy: "Akurasi", enemiesDef: "Musuh Gugur", maxDmg: "DMG Terbesar", achEarned: "Pencapaian Diraih"
   },
   en: {
     play: "Play Game", settings: "Settings", lang: "Language", sfxOn: "Sound On", sfxOff: "Sound Off",
@@ -48,7 +49,52 @@ const DICT = {
     map: "Map", inv: "Bag", stats: "Trophies", win: "VICTORY", lose: "GAME OVER", tryAgain: "Try Again",
     playAgain: "Play Again", equip: "Equip", unequip: "Unequip", emptyBag: "Empty Bag", mapTitle: "World Map",
     hintAlchemist: "AI Alchemist Hint", answer: "Answer", true: "True", false: "False", battleLog: "Battle Log",
-    back: "Back", achUnlocked: "New Achievement!"
+    back: "Back", achUnlocked: "New Achievement!", summary: "Adventure Summary", 
+    accuracy: "Accuracy", enemiesDef: "Enemies Defeated", maxDmg: "Highest DMG", achEarned: "Earned Trophies"
+  }
+};
+
+// --- ENEMY TAUNTS DATABASE (RNG HAND-CRAFTED) ---
+const ENEMY_TAUNTS = {
+  'Slime': {
+    id: ["Bloop.. {name} terlihat lezat!", "Senjatamu hanya menggelitik!", "Akan kucerna armor {class} mu!", "Lembek? Pukulanku tidak!", "Menyerahlah dan jadilah jeli!"],
+    en: ["Bloop.. {name} looks tasty!", "Your weapon just tickles!", "I'll digest your {class} armor!", "Squishy? My hits aren't!", "Give up and become jelly!"]
+  },
+  'Goblin': {
+    id: ["Hehehe, koin emasmu buatku!", "Tusuk! Tusuk! Tusuk!", "Seorang {class} yang lambat!", "Pedang karatku haus darah!", "Akan kucuri hartamu, {name}!"],
+    en: ["Hehehe, your gold is mine!", "Stab! Stab! Stab!", "Such a slow {class}!", "My rusty blade thirsts for blood!", "I'll steal your loot, {name}!"]
+  },
+  'Goblin Mage': {
+    id: ["Terbakarlah oleh sihirku!", "Ramuan ini akan melelehkanmu!", "Otak {class} terlalu bodoh untuk ini!", "Rasakan mantra rahasiaku!", "Debu menjadi debu, {name}!"],
+    en: ["Burn by my magic!", "This potion will melt you!", "A {class}'s brain is too dumb for this!", "Feel my secret spell!", "Dust to dust, {name}!"]
+  },
+  'Wolf': {
+    id: ["Grrrrrr....", "Auuuuuu! Daging segar!", "Tulang {class} pasti renyah!", "Larilah selagi bisa, {name}!", "*Mengendus* Bau ketakutan!"],
+    en: ["Grrrrrr....", "Awooooo! Fresh meat!", "{class} bones must be crunchy!", "Run while you can, {name}!", "*Sniffs* The smell of fear!"]
+  },
+  'Skeleton': {
+    id: ["*Suara tulang berderik*", "Bergabunglah dengan kematian...", "Tebasanku tak kenal lelah!", "Jiwa yang malang...", "Dagingmu akan membusuk, {name}!"],
+    en: ["*Bones rattling*", "Join the dead...", "My slash never tires!", "Poor soul...", "Your flesh will rot, {name}!"]
+  },
+  'Orc Warrior': {
+    id: ["WAAAGH! Hancurkan {name}!", "Palu ini penentu ajalmu!", "Kau terlalu kecil, serangga!", "Orc terkuat tidak pernah kalah!", "Armor {class} mu seperti kertas!"],
+    en: ["WAAAGH! Smash {name}!", "This hammer is your doom!", "You are too small, insect!", "Strongest Orc never loses!", "Your {class} armor is like paper!"]
+  },
+  'Stone Golem': {
+    id: ["Batu... menindas... daging...", "Senjatamu patah di tubuhku!", "Tak bisa... ditembus!", "Hancurkan... {name}...", "Langkahku... menggetarkan bumi!"],
+    en: ["Stone... crushes... flesh...", "Your weapon breaks on me!", "Impenetrable!", "Crush... {name}...", "My steps... shake the earth!"]
+  },
+  'Goblin Champ': {
+    id: ["Aku jenderal di sini, tunduklah!", "Pasukanku, saksikan kemenanganku!", "Kalian semua kroco di mataku!", "Pedang besarku mencarimu, {name}!", "Tak ada ampun untuk seorang {class}!"],
+    en: ["I'm the general here, bow down!", "My troops, witness my victory!", "You are all grunts to me!", "My greatsword seeks you, {name}!", "No mercy for a {class}!"]
+  },
+  'Orc King': {
+    id: ["Raja Orc menghukummu!", "Berlututlah di hadapanku, {name}!", "Takhta ini milikku selamanya!", "Sekali pukul, kau rata dengan tanah!", "Kroco sepertimu berani menantangku?!"],
+    en: ["The Orc King punishes you!", "Kneel before me, {name}!", "This throne is mine forever!", "One hit, you're flat on the ground!", "A grunt like you dares challenge me?!"]
+  },
+  'Raja Iblis': {
+    id: ["Kegelapan abadi menantimu, {class}!", "Harapanmu sia-sia, {name}!", "Dunia ini milikku!", "Keputusasaan adalah takdirmu yang pasti!", "Sujudlah pada Dewa Kehancuran!"],
+    en: ["Eternal darkness awaits, {class}!", "Your hope is vain, {name}!", "This world is mine!", "Despair is your absolute fate!", "Bow to the God of Destruction!"]
   }
 };
 
@@ -110,7 +156,6 @@ const ITEMS_DATABASE = [
 
 const QUESTIONS_DB = {
   mcq: [
-    // Chemistry
     { id_q: "Apa hasil setara dari pembentukan air: 2H₂ + O₂ → ?", en_q: "What is the product of: 2H₂ + O₂ → ?", options: ["2H₂O", "H₂O₂", "2HO", "H₂O"], ans: 0 },
     { id_q: "Gas dari fotosintesis (6CO₂ + 6H₂O → C₆H₁₂O₆ + ?) adalah...", en_q: "Gas produced by photosynthesis is...", options: ["6CO₂", "6O₂", "6H₂", "6CH₄"], ans: 1 },
     { id_q: "Reaksi HCl + NaOH → NaCl + ? menghasilkan...", en_q: "HCl + NaOH → NaCl + ?", options: ["H₂", "O₂", "H₂O", "CO₂"], ans: 2 },
@@ -125,7 +170,6 @@ const QUESTIONS_DB = {
     { id_q: "Rumus kimia garam dapur adalah...", en_q: "Chemical formula for table salt is...", options: ["KCl", "NaCl", "MgCl₂", "CaCl₂"], ans: 1 },
     { id_q: "Zat yang mengubah kertas lakmus biru menjadi merah bersifat...", en_q: "Substance that turns blue litmus red is...", options: ["Basa", "Netral", "Asam (Acid)", "Garam"], ans: 2 },
     { id_q: "Simbol unsur untuk Kalium adalah...", en_q: "Chemical symbol for Potassium is...", options: ["Ka", "K", "Pt", "Po"], ans: 1 },
-    // Space / Astronomy
     { id_q: "Planet manakah yang dikenal sebagai 'Planet Merah'?", en_q: "Which planet is known as the 'Red Planet'?", options: ["Venus", "Mars", "Jupiter", "Saturnus"], ans: 1 },
     { id_q: "Pusat dari Tata Surya kita adalah...", en_q: "The center of our Solar System is...", options: ["Bumi/Earth", "Matahari/Sun", "Bulan/Moon", "Bima Sakti"], ans: 1 },
     { id_q: "Planet terbesar di Tata Surya kita adalah...", en_q: "The largest planet in our Solar System is...", options: ["Saturnus", "Uranus", "Neptunus", "Jupiter"], ans: 3 },
@@ -136,7 +180,6 @@ const QUESTIONS_DB = {
     { id_q: "Jarak yang ditempuh cahaya dalam satu tahun disebut...", en_q: "The distance light travels in one year is...", options: ["Tahun Kabisat", "Tahun Cahaya/Light Year", "Parsec", "Kecepatan Warp"], ans: 1 }
   ],
   tf: [
-    // Chemistry
     { id_q: "Air raksa (Hg) berwujud cair pada suhu ruang.", en_q: "Mercury (Hg) is liquid at room temp.", ans: true },
     { id_q: "Proton bermuatan negatif.", en_q: "Proton has a negative charge.", ans: false },
     { id_q: "Oksigen adalah gas paling melimpah di atmosfer bumi.", en_q: "Oxygen is the most abundant gas in Earth's atmosphere.", ans: false }, 
@@ -147,7 +190,6 @@ const QUESTIONS_DB = {
     { id_q: "Es mencair adalah perubahan kimia.", en_q: "Melting ice is a chemical change.", ans: false },
     { id_q: "Karbon monoksida (CO) beracun bagi manusia.", en_q: "Carbon monoxide is toxic to humans.", ans: true },
     { id_q: "Air adalah pelarut universal.", en_q: "Water is a universal solvent.", ans: true },
-    // Space / Astronomy
     { id_q: "Matahari adalah sebuah bintang.", en_q: "The Sun is a star.", ans: true },
     { id_q: "Bumi adalah planet ketiga dari Matahari.", en_q: "Earth is the third planet from the Sun.", ans: true },
     { id_q: "Suara bisa merambat dengan jelas di ruang hampa angkasa.", en_q: "Sound can travel clearly in the vacuum of space.", ans: false },
@@ -156,7 +198,6 @@ const QUESTIONS_DB = {
     { id_q: "Venus adalah planet terpanas di tata surya.", en_q: "Venus is the hottest planet in the solar system.", ans: true }
   ],
   essay: [
-    // Chemistry
     { id_q: "Tuliskan rumus kimia dari air.", en_q: "Write the chemical formula for water.", ans: ["h2o", "h20"] },
     { id_q: "Apa simbol unsur kimia untuk Emas?", en_q: "What is the chemical symbol for Gold?", ans: ["au"] },
     { id_q: "Zat lakmus biru menjadi merah bersifat...", en_q: "Substance turning blue litmus red is...", ans: ["asam", "acid", "acidic"] },
@@ -165,19 +206,16 @@ const QUESTIONS_DB = {
     { id_q: "Apa rumus kimia Karbon Dioksida?", en_q: "Formula for Carbon Dioxide?", ans: ["co2", "co 2"] },
     { id_q: "Pusat dari sebuah atom disebut...", en_q: "The center of an atom is called...", ans: ["inti", "inti atom", "nucleus"] },
     { id_q: "Gas yang kita hirup untuk hidup...", en_q: "Gas we breathe to live...", ans: ["oksigen", "oxygen", "o2"] },
-    // Space / Astronomy
     { id_q: "Nama galaksi tempat kita tinggal adalah...", en_q: "The name of our galaxy is...", ans: ["bima sakti", "milky way"] },
     { id_q: "Bintang yang menjadi pusat tata surya kita...", en_q: "The star at the center of our solar system...", ans: ["matahari", "sun"] },
     { id_q: "Satelit alami yang mengelilingi Bumi adalah...", en_q: "The natural satellite orbiting Earth is...", ans: ["bulan", "moon"] },
     { id_q: "Planet terdekat dengan Matahari adalah...", en_q: "The closest planet to the Sun is...", ans: ["merkurius", "mercury"] }
   ],
   matching: [
-    // Chemistry
     { id_q: "Jodohkan Unsur/Simbol", en_q: "Match Element/Symbol", pairs: [ { left: "Natrium", right: "Na" }, { left: "Kalium", right: "K" }, { left: "Besi", right: "Fe" }, { left: "Perak", right: "Ag" } ] },
     { id_q: "Jodohkan Istilah", en_q: "Match Terms", pairs: [ { left: "Kation", right: "Positif" }, { left: "Anion", right: "Negatif" }, { left: "Katalis", right: "Cepat" } ] },
     { id_q: "Jodohkan Asam/Basa", en_q: "Match Acid/Base", pairs: [ { left: "HCl", right: "Asam Kuat" }, { left: "NaOH", right: "Basa Kuat" }, { left: "CH3COOH", right: "Asam Lemah" } ] },
     { id_q: "Jodohkan Fase", en_q: "Match Phase", pairs: [ { left: "Solid (s)", right: "Padat" }, { left: "Aqueous (aq)", right: "Larutan" }, { left: "Gas (g)", right: "Gas" } ] },
-    // Space / Astronomy
     { id_q: "Jodohkan Planet & Cirinya", en_q: "Match Planet & Trait", pairs: [ { left: "Mars", right: "Si Merah" }, { left: "Jupiter", right: "Terbesar" }, { left: "Bumi", right: "Bisa Dihuni" }, { left: "Saturnus", right: "Bercincin" } ] },
     { id_q: "Jodohkan Objek Angkasa", en_q: "Match Space Objects", pairs: [ { left: "Matahari", right: "Bintang" }, { left: "Bulan", right: "Satelit Alami" }, { left: "Bima Sakti", right: "Galaksi" } ] }
   ]
@@ -256,6 +294,8 @@ const playSFX = (type, isMuted) => {
   }
 };
 
+const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
+
 export default function App() {
   const [gameState, setGameState] = useState('MENU'); 
   const [showMap, setShowMap] = useState(false);
@@ -317,16 +357,13 @@ export default function App() {
   const logContainerRef = useRef(null);
   const bgmRef = useRef(null);
 
-  const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
-
   useEffect(() => { if (logContainerRef.current) logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight; }, [logs]);
   
   // Audio Initialization & MP3 Loop
   useEffect(() => {
-    // Kita panggil langsung dari root public (/bgm.mp3)
     bgmRef.current = new Audio('/bgm.mp3');
     bgmRef.current.loop = true;
-    bgmRef.current.volume = 0.3; // Volume BGM diatur 30% agar tidak menutupi SFX
+    bgmRef.current.volume = 0.3; 
     
     return () => {
       if (bgmRef.current) {
@@ -340,14 +377,11 @@ export default function App() {
   useEffect(() => {
     if (!bgmRef.current) return;
     
-    // Mainkan musik kapan pun selama tidak di-mute
     if (!isBgmMuted) {
-      // Kita harus "menangkap" Promise dari play() untuk mencegah error Autoplay Policy
       const playPromise = bgmRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           console.warn("Autoplay diblokir oleh browser. Pengguna harus mengklik halaman terlebih dahulu.", error);
-          // Jika browser memblokir, kita otomatis matikan toggle agar tidak terjadi bug UI
           setIsBgmMuted(true);
         });
       }
@@ -396,18 +430,17 @@ export default function App() {
     setTimeout(() => { setFloatingTexts(prev => prev.filter(ft => !particles.find(p => p.id === ft.id))); }, 600);
   };
 
-  const triggerEnemyTaunt = async (enemyData, playerData) => {
+  const triggerEnemyTaunt = (enemyData, playerData) => {
     setEnemyTaunt("...");
-    const prompt = `Anda adalah monster bernama ${enemyData.name}. Berikan SATU kalimat ejekan lucu, singkat, dan menyebalkan (maksimal 10 kata) kepada pemain bernama ${playerData.name} (Class: ${playerData.className}). Jangan gunakan tanda kutip. Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
-    const taunt = await fetchWithBackoff(prompt);
-    if (taunt) {
-       const cleanTaunt = taunt.replace(/"/g, '').trim();
-       setEnemyTaunt(cleanTaunt);
-       addLog(`🗣️ ${enemyData.name}: "${cleanTaunt}"`, 'error');
-       setTimeout(() => setEnemyTaunt(null), 8000); // Hilang setelah 8 detik
-    } else {
-       setEnemyTaunt(null);
-    }
+    setTimeout(() => {
+      const tauntPool = ENEMY_TAUNTS[enemyData.name] ? ENEMY_TAUNTS[enemyData.name][lang] : ["Raaarrggh!"];
+      let selectedTaunt = tauntPool[Math.floor(Math.random() * tauntPool.length)];
+      selectedTaunt = selectedTaunt.replace('{name}', playerData.name).replace('{class}', playerData.className);
+      
+      setEnemyTaunt(selectedTaunt);
+      addLog(`🗣️ ${enemyData.name}: "${selectedTaunt}"`, 'error');
+      setTimeout(() => setEnemyTaunt(null), 5000); 
+    }, 600);
   };
 
   const getAlchemistHint = async () => {
@@ -415,7 +448,7 @@ export default function App() {
     setIsHintLoading(true); playSFX('buff', isMuted);
     let qText = lang === 'id' ? currentQuestion.data.id_q : currentQuestion.data.en_q;
     if (currentQuestion.type === 'matching') qText = lang === 'id' ? "Jodohkan istilah kimia/astronomi ini." : "Match these chemical/astronomy terms.";
-    const prompt = `Sebagai ilmuwan, berikan 1 kalimat petunjuk (maks 20 kata) tanpa menyebut jawaban langsung. Pertanyaan: "${qText}". Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
+    const prompt = `Sebagai pakar sains, berikan 1 kalimat petunjuk singkat (maks 20 kata) tanpa menyebut jawaban langsung. Pertanyaan: "${qText}". Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
     const hint = await fetchWithBackoff(prompt);
     if (hint) { setAlchemistHint(hint.replace(/"/g, '').trim()); playSFX('heal', isMuted); } 
     else { setAlchemistHint(lang==='id'?"Koneksi terganggu...":"Connection disrupted..."); playSFX('error', isMuted); }
@@ -454,12 +487,10 @@ export default function App() {
   const addLog = (msg, type = 'normal') => setLogs(prev => [...prev, { text: msg, type }]);
   
   // --- PENGAMAT PENCAPAIAN (ACHIEVEMENT WATCHER) ---
-  // Sistem ini dengan aman memantau skor di latar belakang dan mencegah lencana ganda
   useEffect(() => {
     ACHIEVEMENTS_LIST.forEach(ach => {
       if (ach.check(stats)) {
         setUnlockedAchs(prev => {
-          // Pengecekan ketat: Jika lencana ini belum pernah diberikan, berikan sekarang!
           if (!prev.includes(ach.id)) {
             setAchQueue(q => [...q, ach]);
             return [...prev, ach.id];
@@ -1545,7 +1576,7 @@ export default function App() {
         @keyframes pulseSlow { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } }
         .animate-pulse-slow { animation: pulseSlow 4s ease-in-out infinite; }
         @keyframes bounceSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .animate-bounce-slow { animation: bounceSlow 3s ease-in-out infinite; }s
+        .animate-bounce-slow { animation: bounceSlow 3s ease-in-out infinite; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-15px) rotate(-5deg); } 40% { transform: translateX(15px) rotate(5deg); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
         .animate-shake { animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         @keyframes floatUpFade { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -30px) scale(1.3); opacity: 1; } 100% { transform: translate(-50%, -100px) scale(1); opacity: 0; } }
