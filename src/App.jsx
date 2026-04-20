@@ -116,16 +116,16 @@ const MAP_REGIONS = [
 ];
 
 const ENEMIES = [
-  { name: 'Slime', sprite: '/public/slime.jpg', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
-  { name: 'Goblin', sprite: '/public/goblin.jpg', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
-  { name: 'Goblin Mage', sprite: '/public/goblin_mage.jpg', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
-  { name: 'Wolf', sprite: '/public/wolf.jpg', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
-  { name: 'Skeleton', sprite: '/public/skeleton.jpg', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
-  { name: 'Orc Warrior', sprite: '/public/orc.jpg', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
-  { name: 'Stone Golem', sprite: '/public/golem.jpg', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
-  { name: 'Goblin Champ', sprite: '/public/goblin_champ.jpg', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
-  { name: 'Orc King', sprite: '/public/orc_king.jpg', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
-  { name: 'Raja Iblis', sprite: '/public/demon_king.jpg', hp: 400, maxHp: 400, dmg: 35, type: 'Raja Iblis' }
+  { name: 'Slime', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
+  { name: 'Goblin', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
+  { name: 'Goblin Mage', emoji: '🧙‍♂️', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
+  { name: 'Wolf', emoji: '🐺', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
+  { name: 'Skeleton', emoji: '💀', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
+  { name: 'Orc Warrior', emoji: '👹', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
+  { name: 'Stone Golem', emoji: '🪨', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
+  { name: 'Goblin Champ', emoji: '👿', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
+  { name: 'Orc King', emoji: '🦍', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
+  { name: 'Raja Iblis', emoji: '👑😈', hp: 400, maxHp: 400, dmg: 35, type: 'Raja Iblis' }
 ];
 
 const ITEMS_DATABASE = [
