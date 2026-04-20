@@ -443,16 +443,25 @@ export default function App() {
   const addLog = (msg, type = 'normal') => setLogs(prev => [...prev, { text: msg, type }]);
   
   const updateStat = (key, valueOrFn) => {
-    setStats(prevStats => {
-      const newStats = { ...prevStats, [key]: typeof valueOrFn === 'function' ? valueOrFn(prevStats[key]) : valueOrFn };
-      ACHIEVEMENTS_LIST.forEach(ach => {
-        if (ach.check(newStats) && !unlockedAchs.includes(ach.id)) {
-           setUnlockedAchs(p => [...p, ach.id]); setAchQueue(p => [...p, ach]);
-        }
-      });
-      return newStats;
-    });
+    setStats(prevStats => ({ ...prevStats, [key]: typeof valueOrFn === 'function' ? valueOrFn(prevStats[key]) : valueOrFn }));
   };
+
+  // --- PENGAMAT PENCAPAIAN (ACHIEVEMENT WATCHER) ---
+  // Sistem ini dengan aman memantau skor di latar belakang dan mencegah lencana ganda
+  useEffect(() => {
+    ACHIEVEMENTS_LIST.forEach(ach => {
+      if (ach.check(stats)) {
+        setUnlockedAchs(prev => {
+          // Pengecekan ketat: Jika lencana ini belum pernah diberikan, berikan sekarang!
+          if (!prev.includes(ach.id)) {
+            setAchQueue(q => [...q, ach]);
+            return [...prev, ach.id];
+          }
+          return prev;
+        });
+      }
+    });
+  }, [stats]);
 
   const pickQuestion = () => {
     const roll = Math.random(); let type = 'mcq';
@@ -1382,7 +1391,7 @@ export default function App() {
       {/* Game Over / Win Modals */}
       {gameState === 'LOSE' && (
         <div className="fixed inset-0 bg-red-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 z-[120] animate-pop-in overflow-y-auto custom-scrollbar">
-          <div className="flex flex-col items-center justify-center min-h-full py-10">
+          <div className="flex flex-col items-center justify-center min-h-full py-10 w-full relative z-10">
              <Skull size={60} className="text-red-500 mb-4 md:mb-6 animate-pulse drop-shadow-[0_0_40px_rgba(239,68,68,0.6)] shrink-0" />
              <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 mb-2 md:mb-4 tracking-widest drop-shadow-2xl text-center shrink-0">{t('lose')}</h1>
              <p className="text-slate-300 text-sm md:text-lg mb-6 md:mb-8 text-center max-w-sm font-bold shrink-0">Pahlawan <span className="text-white">{player.name}</span> telah gugur di tangan {enemy?.name}.</p>
@@ -1428,8 +1437,8 @@ export default function App() {
                 )}
              </div>
 
-             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md shrink-0">
-                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('stats')}</button>
+             <div className="flex flex-col gap-3 w-full max-w-md shrink-0 pb-10">
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0 shadow-lg">{t('stats')}</button>
                 <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-red-600/10 border border-red-600 text-red-500 hover:bg-red-600 hover:text-white font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.2)] transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('tryAgain')}</button>
              </div>
           </div>
@@ -1486,9 +1495,9 @@ export default function App() {
                 )}
              </div>
 
-             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md shrink-0">
-                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="flex-1 bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
-                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
+             <div className="flex flex-col gap-3 w-full max-w-md shrink-0 pb-10">
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
              </div>
           </div>
         </div>
