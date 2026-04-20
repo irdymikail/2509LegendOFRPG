@@ -278,6 +278,7 @@ export default function App() {
   const [floatingTexts, setFloatingTexts] = useState([]); 
   const [alchemistHint, setAlchemistHint] = useState(null);
   const [isHintLoading, setIsHintLoading] = useState(false);
+  const [enemyTaunt, setEnemyTaunt] = useState(null);
 
   // --- ACHIEVEMENT POPUP QUEUE ---
   const [unlockedAchs, setUnlockedAchs] = useState([]);
@@ -395,11 +396,18 @@ export default function App() {
     setTimeout(() => { setFloatingTexts(prev => prev.filter(ft => !particles.find(p => p.id === ft.id))); }, 600);
   };
 
-  const triggerBossTaunt = async (enemyData, playerData) => {
-    if (enemyData.type === 'Kroco' || enemyData.type === 'Penjaga') return; 
-    const prompt = `Anda adalah ${enemyData.name}. Berikan SATU kalimat ejekan (maksimal 15 kata) kepada ${playerData.name}. Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
+  const triggerEnemyTaunt = async (enemyData, playerData) => {
+    setEnemyTaunt("...");
+    const prompt = `Anda adalah monster bernama ${enemyData.name}. Berikan SATU kalimat ejekan lucu, singkat, dan menyebalkan (maksimal 10 kata) kepada pemain bernama ${playerData.name} (Class: ${playerData.className}). Jangan gunakan tanda kutip. Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
     const taunt = await fetchWithBackoff(prompt);
-    if (taunt) addLog(`🗣️ ${enemyData.name}: "${taunt.replace(/"/g, '').trim()}"`, 'error');
+    if (taunt) {
+       const cleanTaunt = taunt.replace(/"/g, '').trim();
+       setEnemyTaunt(cleanTaunt);
+       addLog(`🗣️ ${enemyData.name}: "${cleanTaunt}"`, 'error');
+       setTimeout(() => setEnemyTaunt(null), 8000); // Hilang setelah 8 detik
+    } else {
+       setEnemyTaunt(null);
+    }
   };
 
   const getAlchemistHint = async () => {
@@ -431,7 +439,10 @@ export default function App() {
 
     setCurrentEnemyIndex(0); const firstEnemy = ENEMIES[0]; setEnemy({ ...firstEnemy });
     setLogs([{ text: `⚔️ ${t('startAdv')}!`, type: 'normal' }]);
-    triggerBossTaunt(firstEnemy, playerData); 
+    
+    setEnemyTaunt(null);
+    triggerEnemyTaunt(firstEnemy, playerData); 
+    
     setCooldowns({ classSkill: 0, doubleDmg: 0, autoCorrect: 0 });
     setActiveBuffs({ tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false, doubleDmg: false, autoCorrect: false });
     setStats({ qAnswered: 0, qCorrect: 0, qWrong: 0, dmgDealt: 0, dmgReceived: 0, highestDmg: 0, currentStreak: 0, maxStreak: 0, enemiesDefeated: 0, itemsCollected: 0, skillsUsed: 0 });
@@ -442,10 +453,6 @@ export default function App() {
 
   const addLog = (msg, type = 'normal') => setLogs(prev => [...prev, { text: msg, type }]);
   
-  const updateStat = (key, valueOrFn) => {
-    setStats(prevStats => ({ ...prevStats, [key]: typeof valueOrFn === 'function' ? valueOrFn(prevStats[key]) : valueOrFn }));
-  };
-
   // --- PENGAMAT PENCAPAIAN (ACHIEVEMENT WATCHER) ---
   // Sistem ini dengan aman memantau skor di latar belakang dan mencegah lencana ganda
   useEffect(() => {
@@ -462,6 +469,10 @@ export default function App() {
       }
     });
   }, [stats]);
+
+  const updateStat = (key, valueOrFn) => {
+    setStats(prevStats => ({ ...prevStats, [key]: typeof valueOrFn === 'function' ? valueOrFn(prevStats[key]) : valueOrFn }));
+  };
 
   const pickQuestion = () => {
     const roll = Math.random(); let type = 'mcq';
@@ -636,7 +647,10 @@ export default function App() {
     const nextIdx = currentEnemyIndex + 1; const nextEnemy = ENEMIES[nextIdx];
     setCurrentEnemyIndex(nextIdx); setEnemy({ ...nextEnemy });
     setLogs(prev => [...prev, { text: `\n--- ${nextEnemy.type.toUpperCase()} ---`, type: 'normal' }]);
-    triggerBossTaunt(nextEnemy, player); setGameState('BATTLE');
+    
+    setEnemyTaunt(null);
+    triggerEnemyTaunt(nextEnemy, player); 
+    setGameState('BATTLE');
   };
 
   const triggerClassSkill = () => {
@@ -1010,6 +1024,15 @@ export default function App() {
               </div>
               
               <div className={`text-[80px] md:text-[100px] leading-none mb-2 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative ${animState.enemy}`}>
+                {/* SPEECH BUBBLE */}
+                {enemyTaunt && (
+                  <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
+                    <p className="text-[10px] md:text-xs font-black leading-tight text-center">
+                      {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
+                    </p>
+                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10"></div>
                 {enemy?.emoji}
               </div>
@@ -1522,7 +1545,7 @@ export default function App() {
         @keyframes pulseSlow { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } }
         .animate-pulse-slow { animation: pulseSlow 4s ease-in-out infinite; }
         @keyframes bounceSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .animate-bounce-slow { animation: bounceSlow 3s ease-in-out infinite; }
+        .animate-bounce-slow { animation: bounceSlow 3s ease-in-out infinite; }s
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-15px) rotate(-5deg); } 40% { transform: translateX(15px) rotate(5deg); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
         .animate-shake { animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         @keyframes floatUpFade { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -30px) scale(1.3); opacity: 1; } 100% { transform: translate(-50%, -100px) scale(1); opacity: 0; } }
