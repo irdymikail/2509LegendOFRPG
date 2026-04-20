@@ -116,7 +116,7 @@ const MAP_REGIONS = [
 ];
 
 const ENEMIES = [
-  { name: 'Slime', emoji: '🦠', sprite: 'public/slime.png', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
+  { name: 'Slime', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
   { name: 'Goblin', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
   { name: 'Goblin Mage', emoji: '🧙‍♂️', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
   { name: 'Wolf', emoji: '🐺', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
