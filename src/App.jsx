@@ -56,43 +56,43 @@ const DICT = {
 
 // --- ENEMY TAUNTS DATABASE (RNG HAND-CRAFTED) ---
 const ENEMY_TAUNTS = {
-  'Slime': {
+  'slime': {
     id: ["Bloop.. {name} terlihat lezat!", "Senjatamu hanya menggelitik!", "Akan kucerna armor {class} mu!", "Lembek? Pukulanku tidak!", "Menyerahlah dan jadilah jeli!"],
     en: ["Bloop.. {name} looks tasty!", "Your weapon just tickles!", "I'll digest your {class} armor!", "Squishy? My hits aren't!", "Give up and become jelly!"]
   },
-  'Goblin': {
+  'goblin': {
     id: ["Hehehe, koin emasmu buatku!", "Tusuk! Tusuk! Tusuk!", "Seorang {class} yang lambat!", "Pedang karatku haus darah!", "Akan kucuri hartamu, {name}!"],
     en: ["Hehehe, your gold is mine!", "Stab! Stab! Stab!", "Such a slow {class}!", "My rusty blade thirsts for blood!", "I'll steal your loot, {name}!"]
   },
-  'Goblin Mage': {
+  'gargoyle': {
     id: ["Terbakarlah oleh sihirku!", "Ramuan ini akan melelehkanmu!", "Otak {class} terlalu bodoh untuk ini!", "Rasakan mantra rahasiaku!", "Debu menjadi debu, {name}!"],
     en: ["Burn by my magic!", "This potion will melt you!", "A {class}'s brain is too dumb for this!", "Feel my secret spell!", "Dust to dust, {name}!"]
   },
-  'Wolf': {
+  'vampire': {
     id: ["Grrrrrr....", "Auuuuuu! Daging segar!", "Tulang {class} pasti renyah!", "Larilah selagi bisa, {name}!", "*Mengendus* Bau ketakutan!"],
     en: ["Grrrrrr....", "Awooooo! Fresh meat!", "{class} bones must be crunchy!", "Run while you can, {name}!", "*Sniffs* The smell of fear!"]
   },
-  'Skeleton': {
+  'zombie': {
     id: ["*Suara tulang berderik*", "Bergabunglah dengan kematian...", "Tebasanku tak kenal lelah!", "Jiwa yang malang...", "Dagingmu akan membusuk, {name}!"],
     en: ["*Bones rattling*", "Join the dead...", "My slash never tires!", "Poor soul...", "Your flesh will rot, {name}!"]
   },
-  'Orc Warrior': {
+  'Durantee': {
     id: ["WAAAGH! Hancurkan {name}!", "Palu ini penentu ajalmu!", "Kau terlalu kecil, serangga!", "Orc terkuat tidak pernah kalah!", "Armor {class} mu seperti kertas!"],
     en: ["WAAAGH! Smash {name}!", "This hammer is your doom!", "You are too small, insect!", "Strongest Orc never loses!", "Your {class} armor is like paper!"]
   },
-  'Stone Golem': {
+  'Spruce Demon': {
     id: ["Batu... menindas... daging...", "Senjatamu patah di tubuhku!", "Tak bisa... ditembus!", "Hancurkan... {name}...", "Langkahku... menggetarkan bumi!"],
     en: ["Stone... crushes... flesh...", "Your weapon breaks on me!", "Impenetrable!", "Crush... {name}...", "My steps... shake the earth!"]
   },
-  'Goblin Champ': {
+  'deerclops': {
     id: ["Aku jenderal di sini, tunduklah!", "Pasukanku, saksikan kemenanganku!", "Kalian semua kroco di mataku!", "Pedang besarku mencarimu, {name}!", "Tak ada ampun untuk seorang {class}!"],
     en: ["I'm the general here, bow down!", "My troops, witness my victory!", "You are all grunts to me!", "My greatsword seeks you, {name}!", "No mercy for a {class}!"]
   },
-  'Orc King': {
+  'Skeleborg': {
     id: ["Raja Orc menghukummu!", "Berlututlah di hadapanku, {name}!", "Takhta ini milikku selamanya!", "Sekali pukul, kau rata dengan tanah!", "Kroco sepertimu berani menantangku?!"],
-    en: ["The Orc King punishes you!", "Kneel before me, {name}!", "This throne is mine forever!", "One hit, you're flat on the ground!", "A grunt like you dares challenge me?!"]
+    en: ["The Skeleborg punishes you!", "Kneel before me, {name}!", "This throne is mine forever!", "One hit, you're flat on the ground!", "A grunt like you dares challenge me?!"]
   },
-  'Raja Iblis': {
+  'slothfuldragon': {
     id: ["Kegelapan abadi menantimu, {class}!", "Harapanmu sia-sia, {name}!", "Dunia ini milikku!", "Keputusasaan adalah takdirmu yang pasti!", "Sujudlah pada Dewa Kehancuran!"],
     en: ["Eternal darkness awaits, {class}!", "Your hope is vain, {name}!", "This world is mine!", "Despair is your absolute fate!", "Bow to the God of Destruction!"]
   }
@@ -116,16 +116,16 @@ const MAP_REGIONS = [
 ];
 
 const ENEMIES = [
-  { name: 'Slime', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
-  { name: 'Goblin', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
-  { name: 'Goblin Mage', emoji: '🧙‍♂️', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
-  { name: 'Wolf', emoji: '🐺', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
-  { name: 'Skeleton', emoji: '💀', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
-  { name: 'Orc Warrior', emoji: '👹', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
-  { name: 'Stone Golem', emoji: '🪨', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
-  { name: 'Goblin Champ', emoji: '👿', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
-  { name: 'Orc King', emoji: '🦍', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
-  { name: 'Raja Iblis', emoji: '👑😈', hp: 400, maxHp: 400, dmg: 35, type: 'Raja Iblis' }
+  { name: 'slime', emoji: '🦠', sprite: '/slime.png', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
+  { name: 'goblin', emoji: '👺', sprite: '/goblin.png', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
+  { name: 'gargoyle', emoji: '🧙‍♂️', sprite: '/gargoyle.png' , hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
+  { name: 'vampire', emoji: '🐺', sprite: '/vampire.png', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
+  { name: 'zombie', emoji: '💀', sprite: '/zombie.png', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
+  { name: 'durantree', emoji: '👹', sprite: '/durantree.png', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
+  { name: 'sprucedemon', emoji: '🪨', sprite: '/sprucedemon.png', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
+  { name: 'deerclops', emoji: '👿', sprite: '/deerclops.png', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
+  { name: 'skeleborg', emoji: '🦍', sprite: '/skeleborg.png', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
+  { name: 'slothfuldragon', emoji: '👑😈', sprite: '/slothfuldragon.png', hp: 400, maxHp: 400, dmg: 35, type: 'slothfuldragon' }
 ];
 
 const ITEMS_DATABASE = [
@@ -665,7 +665,7 @@ export default function App() {
     setActiveBuffs({ tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false, doubleDmg: false, autoCorrect: false });
     
     const availableItems = ITEMS_DATABASE.filter(item => item.minTier <= currentEnemyIndex);
-    const dropCount = enemy.type === 'Raja Iblis' ? 3 : (enemy.type === 'Komando' ? 2 : 1);
+    const dropCount = enemy.type === 'slothfuldragon' ? 3 : (enemy.type === 'Komando' ? 2 : 1);
     const drops = [];
     for (let i = 0; i < dropCount; i++) {
        if (availableItems.length > 0) {
@@ -1068,20 +1068,25 @@ export default function App() {
                 <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg"><span className="text-xl md:text-2xl drop-shadow-none">👺</span> {enemy?.name}</h2>
               </div>
               
-              <div className={`text-[80px] md:text-[100px] leading-none mb-2 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative ${animState.enemy}`}>
-                {/* SPEECH BUBBLE */}
-                {enemyTaunt && (
-                  <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
-                    <p className="text-[10px] md:text-xs font-black leading-tight text-center">
-                      {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
-                    </p>
-                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10"></div>
-                {enemy?.emoji}
-              </div>
-            </div>
+<div className={`text-[80px] md:text-[100px] leading-none mb-2 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative flex items-center justify-center min-h-[120px] md:min-h-[160px] ${animState.enemy}`}>
+  {/* SPEECH BUBBLE */}
+  {enemyTaunt && (
+    <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
+      <p className="text-[10px] md:text-xs font-black leading-tight text-center">
+        {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
+      </p>
+      <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
+    </div>
+  )}
+  <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10"></div>
+  
+  {/* RENDER SPRITE ATAU EMOJI */}
+  {enemy?.sprite ? (
+    <img src={enemy.sprite} alt={enemy.name} className="w-32 h-32 md:w-48 md:h-48 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] pointer-events-none" />
+  ) : (
+    enemy?.emoji
+  )}
+</div>
 
             <div className="text-3xl md:text-4xl font-black text-[#1a1a1a] my-2 select-none drop-shadow-lg opacity-50 shrink-0">VS</div>
 
