@@ -1571,21 +1571,6 @@ export default function App() {
         </div>
       )}
 
-      
-// Logika yang akan kita tanamkan di dalam JSX:
-{enemy?.sprite ? (
-   <img 
-     src={enemy.sprite} 
-     alt={enemy.name} 
-     className="w-40 h-40 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]"
-   />
-) : (
-   <div className="text-[100px] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]">
-     {enemy?.emoji}
-   </div>
-)}
-    
-
       {/* Global CSS for Animations */}
       <style dangerouslySetInnerHTML={{__html: `
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; } 
