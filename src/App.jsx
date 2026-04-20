@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Sword, Heart, Skull, Zap, Map, Trophy, ArrowUpCircle, Check, Lock, Crosshair, Flame, Star, Target, Briefcase, Shirt, Gem, Package, Volume2, VolumeX, Sparkles, Globe, Play, Settings, HelpCircle } from 'lucide-react';
+import { Shield, Sword, Heart, Skull, Zap, Map, Trophy, ArrowUpCircle, Check, Lock, Crosshair, Flame, Star, Target, Briefcase, Shirt, Gem, Package, Volume2, VolumeX, Sparkles, Globe, Play, Settings, HelpCircle, AlertTriangle } from 'lucide-react';
 
-// --- GEMINI API INTEGRATION (Only for Alchemist Hints now) ---
+// --- GEMINI API INTEGRATION (Only for Alchemist Hints) ---
 const apiKey = ""; 
 
 const fetchWithBackoff = async (prompt, retries = 5) => {
@@ -64,37 +64,37 @@ const ENEMY_TAUNTS = {
     id: ["Hehehe, koin emasmu buatku!", "Tusuk! Tusuk! Tusuk!", "Seorang {class} yang lambat!", "Pedang karatku haus darah!", "Akan kucuri hartamu, {name}!"],
     en: ["Hehehe, your gold is mine!", "Stab! Stab! Stab!", "Such a slow {class}!", "My rusty blade thirsts for blood!", "I'll steal your loot, {name}!"]
   },
-  'gargoyle': {
-    id: ["Terbakarlah oleh sihirku!", "Ramuan ini akan melelehkanmu!", "Otak {class} terlalu bodoh untuk ini!", "Rasakan mantra rahasiaku!", "Debu menjadi debu, {name}!"],
-    en: ["Burn by my magic!", "This potion will melt you!", "A {class}'s brain is too dumb for this!", "Feel my secret spell!", "Dust to dust, {name}!"]
-  },
-  'vampire': {
-    id: ["Grrrrrr....", "Auuuuuu! Daging segar!", "Tulang {class} pasti renyah!", "Larilah selagi bisa, {name}!", "*Mengendus* Bau ketakutan!"],
-    en: ["Grrrrrr....", "Awooooo! Fresh meat!", "{class} bones must be crunchy!", "Run while you can, {name}!", "*Sniffs* The smell of fear!"]
+  'skeleborg': {
+    id: ["*Suara mekanis* Terdeteksi bahan organik: hancurkan!", "Armor logammu tidak akan menahan plasma!", "Logika {class} terlalu lambat untuk kualaminku!", "Rasakan kekuatan fusi nuklir!", "Daging menjadi debu, {name}!"],
+    en: ["*Mechanical sound* Organic material detected: annihilate!", "Your metal armor won't withstand plasma!", "A {class}'s logic is too slow for me!", "Feel the power of nuclear fusion!", "Flesh to dust, {name}!"]
   },
   'zombie': {
-    id: ["*Suara tulang berderik*", "Bergabunglah dengan kematian...", "Tebasanku tak kenal lelah!", "Jiwa yang malang...", "Dagingmu akan membusuk, {name}!"],
-    en: ["*Bones rattling*", "Join the dead...", "My slash never tires!", "Poor soul...", "Your flesh will rot, {name}!"]
+    id: ["Grrrrrr....Otak...", "Auuuuuu! Makan dagiing!", "Tulang {class} pasti renyah!", "Larilah selagi bisa, {name}!", "*Mengendus* Bau ketakutan!"],
+    en: ["Grrrrrr....Brains...", "Awooooo! Eat flesh!", "{class} bones must be crunchy!", "Run while you can, {name}!", "*Sniffs* The smell of fear!"]
   },
-  'Durantee': {
-    id: ["WAAAGH! Hancurkan {name}!", "Palu ini penentu ajalmu!", "Kau terlalu kecil, serangga!", "Orc terkuat tidak pernah kalah!", "Armor {class} mu seperti kertas!"],
-    en: ["WAAAGH! Smash {name}!", "This hammer is your doom!", "You are too small, insect!", "Strongest Orc never loses!", "Your {class} armor is like paper!"]
+  'vampire': {
+    id: ["Kematian abadi menantimu...", "Bergabunglah dengan malam...", "Darah pahlawan segar untuk kuminum!", "Jiwa {class} yang malang...", "Dagingmu akan membusuk di istanaku, {name}!"],
+    en: ["Eternal death awaits you...", "Join the night...", "Fresh hero's blood for me to drink!", "A poor {class}'s soul...", "Your flesh will rot in my castle, {name}!"]
   },
-  'Spruce Demon': {
+  'gargoyle': {
+    id: ["Hancurkan penyusup!", "Palu batu ini penentu ajalmu!", "Kau terlalu kecil, serangga!", "Meninggallah oleh kekuatan batu!", "Armor {class} mu seperti kertas!"],
+    en: ["Smash the intruder!", "This stone hammer is your doom!", "You are too small, insect!", "Perish by the power of stone!", "Your {class} armor is like paper!"]
+  },
+  'durantree': {
     id: ["Batu... menindas... daging...", "Senjatamu patah di tubuhku!", "Tak bisa... ditembus!", "Hancurkan... {name}...", "Langkahku... menggetarkan bumi!"],
     en: ["Stone... crushes... flesh...", "Your weapon breaks on me!", "Impenetrable!", "Crush... {name}...", "My steps... shake the earth!"]
   },
-  'deerclops': {
-    id: ["Aku jenderal di sini, tunduklah!", "Pasukanku, saksikan kemenanganku!", "Kalian semua kroco di mataku!", "Pedang besarku mencarimu, {name}!", "Tak ada ampun untuk seorang {class}!"],
-    en: ["I'm the general here, bow down!", "My troops, witness my victory!", "You are all grunts to me!", "My greatsword seeks you, {name}!", "No mercy for a {class}!"]
+  'pinedemon': {
+    id: ["Hutan ini dilarang, rasakan api hukuman!", "Sihir kayu ku akan menjebakmu!", "Akan kubuat kau jadi pupuk pohon ini!", "Debu menjadi abu, {name}!", "Tak ada ampun untuk seorang {class}!"],
+    en: ["This forest is forbidden, feel the fire of punishment!", "My wood magic will trap you!", "I'll turn you into fertilizer for these trees!", "Dust to ash, {name}!", "No mercy for a {class}!"]
   },
-  'Skeleborg': {
-    id: ["Raja Orc menghukummu!", "Berlututlah di hadapanku, {name}!", "Takhta ini milikku selamanya!", "Sekali pukul, kau rata dengan tanah!", "Kroco sepertimu berani menantangku?!"],
-    en: ["The Skeleborg punishes you!", "Kneel before me, {name}!", "This throne is mine forever!", "One hit, you're flat on the ground!", "A grunt like you dares challenge me?!"]
+  'deerclops': {
+    id: ["*Auman raksasa* Satu mata ini melihat ajalmu!", "Tandukku akan menusukmu, {name}!", "Aku raja hutan ini, tunduklah!", "Tak ada kroco sepertimu berani menantangku!", "Ksatria {class} yang rapuh!"],
+    en: ["*Giant roar* This single eye sees your doom!", "My antlers will impale you, {name}!", "I'm the king of this forest, bow down!", "No grunt like you dares challenge me!", "A fragile {class} knight!"]
   },
   'slothfuldragon': {
-    id: ["Kegelapan abadi menantimu, {class}!", "Harapanmu sia-sia, {name}!", "Dunia ini milikku!", "Keputusasaan adalah takdirmu yang pasti!", "Sujudlah pada Dewa Kehancuran!"],
-    en: ["Eternal darkness awaits, {class}!", "Your hope is vain, {name}!", "This world is mine!", "Despair is your absolute fate!", "Bow to the God of Destruction!"]
+    id: ["*Menguap* Kegelapan abadi menantimu, {class}!", "Harapanmu sia-sia, {name}!", "Dunia ini milikku, pergi dan biarkan aku tidur!", "Keputusasaan adalah takdirmu yang pasti!", "Sujudlah pada Dewa Kehancuran!"],
+    en: ["*Yawns* Eternal darkness awaits, {class}!", "Your hope is vain, {name}!", "This world is mine, leave and let me sleep!", "Despair is your absolute fate!", "Bow to the God of Destruction!"]
   }
 };
 
@@ -116,16 +116,16 @@ const MAP_REGIONS = [
 ];
 
 const ENEMIES = [
-  { name: 'slime', emoji: '🦠', sprite: '/slime.png', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
-  { name: 'goblin', emoji: '👺', sprite: '/goblin.png', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
-  { name: 'gargoyle', emoji: '🧙‍♂️', sprite: '/gargoyle.png' , hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
-  { name: 'vampire', emoji: '🐺', sprite: '/vampire.png', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
-  { name: 'zombie', emoji: '💀', sprite: '/zombie.png', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
-  { name: 'durantree', emoji: '👹', sprite: '/durantree.png', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
-  { name: 'sprucedemon', emoji: '🪨', sprite: '/sprucedemon.png', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
-  { name: 'deerclops', emoji: '👿', sprite: '/deerclops.png', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
-  { name: 'skeleborg', emoji: '🦍', sprite: '/skeleborg.png', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
-  { name: 'slothfuldragon', emoji: '👑😈', sprite: '/slothfuldragon.png', hp: 400, maxHp: 400, dmg: 35, type: 'slothfuldragon' }
+  { name: 'slime', sprite: '/slime.png', emoji: '🦠', hp: 30, maxHp: 30, dmg: 5, type: 'Kroco' },
+  { name: 'goblin', sprite: '/goblin.png', emoji: '👺', hp: 45, maxHp: 45, dmg: 8, type: 'Kroco' },
+  { name: 'skeleborg', sprite: '/skeleborg.png', emoji: '💀🤖', hp: 40, maxHp: 40, dmg: 12, type: 'Kroco' },
+  { name: 'zombie', sprite: '/zombie.png', emoji: '🧟‍♂️', hp: 55, maxHp: 55, dmg: 10, type: 'Kroco' },
+  { name: 'vampire', sprite: '/vampire.png', emoji: '🧛‍♂️', hp: 80, maxHp: 80, dmg: 15, type: 'Penjaga' },
+  { name: 'gargoyle', sprite: '/gargoyle.png', emoji: '👹🦇', hp: 110, maxHp: 110, dmg: 18, type: 'Penjaga' },
+  { name: 'durantree', sprite: '/durantree.png', emoji: '🌳👹', hp: 150, maxHp: 150, dmg: 12, type: 'Penjaga' },
+  { name: 'pinedemon', sprite: '/pinedemon.png', emoji: '👿🌲', hp: 180, maxHp: 180, dmg: 25, type: 'Komando' },
+  { name: 'deerclops', sprite: '/deerclops.png', emoji: '🦌👁️', hp: 250, maxHp: 250, dmg: 20, type: 'Komando' },
+  { name: 'slothfuldragon', sprite: '/slothfuldragon.png', emoji: '🐉😴', hp: 400, maxHp: 400, dmg: 35, type: 'Raja Iblis' }
 ];
 
 const ITEMS_DATABASE = [
@@ -665,7 +665,7 @@ export default function App() {
     setActiveBuffs({ tankBlock: false, assassinDodge: false, warrior15x: false, mage3x: false, doubleDmg: false, autoCorrect: false });
     
     const availableItems = ITEMS_DATABASE.filter(item => item.minTier <= currentEnemyIndex);
-    const dropCount = enemy.type === 'slothfuldragon' ? 3 : (enemy.type === 'Komando' ? 2 : 1);
+    const dropCount = enemy.type === 'Raja Iblis' ? 3 : (enemy.type === 'Komando' ? 2 : 1);
     const drops = [];
     for (let i = 0; i < dropCount; i++) {
        if (availableItems.length > 0) {
@@ -805,9 +805,11 @@ export default function App() {
       <div className="absolute inset-0 bg-[#050505] text-white flex flex-col items-center justify-center font-sans overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-[#050505] to-[#050505] animate-pulse-slow"></div>
         <div className="relative z-10 flex flex-col items-center animate-pop-in px-4 w-full">
-          <div className="text-5xl md:text-7xl mb-4 animate-float"><FlaskIcon /></div>
+          <div className="flask-container">
+            <FlaskIcon />
+          </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 mb-2 md:mb-4 tracking-widest drop-shadow-[0_10px_10px_rgba(234,88,12,0.5)] uppercase animate-shine bg-[length:200%_auto] text-center">
-            Kill The Demon King!
+            Chem Legend Of RPG
           </h1>
           <div className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8 md:mb-12 drop-shadow-md text-center">
             GAME MADE BY IRDY(25) dan FALAN(09)
@@ -1055,7 +1057,7 @@ export default function App() {
             {/* Sticky Enemy HP Bar - Always visible */}
             <div className="sticky top-0 z-30 w-full max-w-sm bg-[#050505]/90 backdrop-blur-md pt-2 pb-4 mb-2 rounded-b-xl border-b border-[#111] shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
               <div className="flex justify-between text-[10px] md:text-xs text-slate-400 font-black mb-1.5 px-1 uppercase tracking-widest">
-                 <span>HP {enemy?.name}</span><span className="text-white">{enemy?.hp}/{enemy?.maxHp}</span>
+                 <span className="uppercase">HP {enemy?.name}</span><span className="text-white">{enemy?.hp}/{enemy?.maxHp}</span>
               </div>
               <div className="w-full bg-[#111] border border-[#222] h-4 rounded-full overflow-hidden p-[2px] shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
                 <div className="bg-gradient-to-r from-green-600 via-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_15px_rgba(52,211,153,0.6)]" style={{ width: `${((enemy?.hp || 0) / (enemy?.maxHp || 1)) * 100}%` }}></div>
@@ -1065,28 +1067,39 @@ export default function App() {
             {/* ENEMY */}
             <div className="flex flex-col items-center w-full max-w-sm mb-4 relative shrink-0">
               <div className="text-center mb-3 bg-[#0a0a0a]/50 backdrop-blur-sm p-3 rounded-2xl border border-[#222] shadow-xl">
-                <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg"><span className="text-xl md:text-2xl drop-shadow-none">👺</span> {enemy?.name}</h2>
+                <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg uppercase tracking-wider"><AlertTriangle size={20} className="text-red-500 hidden md:block" /> {enemy?.name}</h2>
               </div>
               
-<div className={`text-[80px] md:text-[100px] leading-none mb-2 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative flex items-center justify-center min-h-[120px] md:min-h-[160px] ${animState.enemy}`}>
-  {/* SPEECH BUBBLE */}
-  {enemyTaunt && (
-    <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
-      <p className="text-[10px] md:text-xs font-black leading-tight text-center">
-        {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
-      </p>
-      <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
-    </div>
-  )}
-  <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10"></div>
-  
-  {/* RENDER SPRITE ATAU EMOJI */}
-  {enemy?.sprite ? (
-    <img src={enemy.sprite} alt={enemy.name} className="w-32 h-32 md:w-48 md:h-48 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] pointer-events-none" />
-  ) : (
-    enemy?.emoji
-  )}
-</div>
+              <div className={`leading-none mb-2 relative ${animState.enemy}`}>
+                {/* SPEECH BUBBLE */}
+                {enemyTaunt && (
+                  <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 w-max max-w-[200px] bg-white text-black p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-slate-200 z-50 animate-pop-in">
+                    <p className="text-[10px] md:text-xs font-black leading-tight text-center">
+                      {enemyTaunt === "..." ? <span className="animate-pulse">💬 ...</span> : `"${enemyTaunt}"`}
+                    </p>
+                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[14px] border-l-transparent border-r-transparent border-t-white"></div>
+                  </div>
+                )}
+                
+                {/* Sprite area with aura */}
+                <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10 animate-pulse"></div>
+                
+                {enemy?.sprite ? (
+                  <img 
+                    src={enemy.sprite} 
+                    alt={enemy.name} 
+                    className="w-48 h-48 md:w-60 md:h-60 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float"
+                    onError={(e) => {
+                      // Fallback: sembunyikan gambar yang rusak, tampilkan emoji
+                      e.target.style.display = 'none';
+                      const emojiSpan = e.target.parentElement.querySelector('.fallback-emoji');
+                      if (emojiSpan) emojiSpan.style.display = 'block';
+                    }}
+                  />
+                ) : null}
+                <span className={`fallback-emoji ${enemy?.sprite ? 'hidden' : 'block'} text-[80px] md:text-[100px] drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float`}>{enemy?.emoji}</span>
+              </div>
+            </div>
 
             <div className="text-3xl md:text-4xl font-black text-[#1a1a1a] my-2 select-none drop-shadow-lg opacity-50 shrink-0">VS</div>
 
@@ -1259,7 +1272,7 @@ export default function App() {
                 <div key={region.id} className="flex flex-col items-center w-full">
                   <div className={`w-full border-2 rounded-2xl md:rounded-3xl p-5 md:p-10 relative transition-all duration-700 ease-out hover:-translate-y-2 ${isRegionUnlocked ? region.color : 'border-[#1a1a1a] bg-[#0a0a0a] opacity-50 grayscale'}`}>
                     <h3 className={`text-lg md:text-2xl font-black mb-1 md:mb-2 flex items-center gap-2 md:gap-3 ${isRegionUnlocked ? region.textHead : 'text-slate-500'} tracking-widest uppercase drop-shadow-md`}>
-                       {isRegionUnlocked ? '🗺️' : '🔒'} {loc(region.name)}
+                       {isRegionUnlocked ? '🗺️' : <Lock size={20}/>} {loc(region.name)}
                     </h3>
                     <p className={`text-[10px] md:text-sm font-bold mb-4 md:mb-8 ${isRegionUnlocked ? 'text-slate-400' : 'text-slate-600'}`}>{region.desc}</p>
                     
@@ -1275,7 +1288,20 @@ export default function App() {
                         return (
                           <div key={globalIdx} className={`w-24 md:w-40 rounded-xl md:rounded-2xl border-2 p-2 md:p-5 flex flex-col items-center text-center relative transition-all duration-500 shrink-0 ${nodeStyle} ${isCurrent ? 'transform scale-105 md:scale-110 -translate-y-2 md:-translate-y-4' : 'hover:scale-105'}`}>
                             {isDefeated && <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 bg-green-500 text-black rounded-full p-1 md:p-1.5 shadow-lg animate-pop-in"><Check size={12}/></div>}
-                            <div className="text-2xl md:text-5xl mb-2 md:mb-4 drop-shadow-lg">{en.emoji}</div>
+                            <div className="w-16 h-16 md:w-24 md:h-24 mb-2 md:mb-4 drop-shadow-lg flex items-center justify-center relative">
+                               {en.sprite ? (
+                                 <img 
+                                   src={en.sprite} 
+                                   alt={en.name} 
+                                   className="w-full h-full object-contain"
+                                   onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      e.target.parentElement.querySelector('.map-fallback-emoji').style.display = 'block';
+                                   }}
+                                 />
+                               ) : null}
+                               <span className={`map-fallback-emoji ${en.sprite ? 'hidden' : 'block'} text-4xl md:text-6xl`}>{en.emoji}</span>
+                            </div>
                             <div className="font-black text-[8px] md:text-sm uppercase tracking-wider line-clamp-1">{en.name}</div>
                           </div>
                         );
@@ -1569,8 +1595,8 @@ export default function App() {
              </div>
 
              <div className="flex flex-col gap-3 w-full max-w-md shrink-0 pb-10">
-                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="flex-1 bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
-                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
              </div>
           </div>
         </div>
@@ -1610,9 +1636,10 @@ export default function App() {
         .animate-spin-slow { animation: spinSlow 3s linear infinite; }
         
         .flask-icon { width: 1em; height: 1em; display: inline-block; background-color: currentColor; mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 2v7.31l-5.69 9.85c-.5.86-.14 1.94.75 2.45.28.16.6.24.94.24h12c1.1 0 2-.9 2-2 0-.34-.08-.66-.24-.94L14 9.31V2h2V0H8v2h2zm-2 15.69L10.31 13h3.38L16 17.69v.31H8v-.31z"/></svg>') no-repeat center; -webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 2v7.31l-5.69 9.85c-.5.86-.14 1.94.75 2.45.28.16.6.24.94.24h12c1.1 0 2-.9 2-2 0-.34-.08-.66-.24-.94L14 9.31V2h2V0H8v2h2zm-2 15.69L10.31 13h3.38L16 17.69v.31H8v-.31z"/></svg>') no-repeat center; }
+        .flask-container { font-size: 80px; color: #f97316; filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.8)); margin-bottom: 1rem; animation: float 4s ease-in-out infinite; }
       `}} />
     </div>
   );
 }
 
-const FlaskIcon = () => <span className="flask-icon text-orange-500 drop-shadow-[0_0_15px_rgba(249,115,22,0.8)]" style={{width: '80px', height:'80px'}}></span>;
+const FlaskIcon = () => <span className="flask-icon"></span>;
