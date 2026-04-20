@@ -110,6 +110,7 @@ const ITEMS_DATABASE = [
 
 const QUESTIONS_DB = {
   mcq: [
+    // Chemistry
     { id_q: "Apa hasil setara dari pembentukan air: 2H₂ + O₂ → ?", en_q: "What is the product of: 2H₂ + O₂ → ?", options: ["2H₂O", "H₂O₂", "2HO", "H₂O"], ans: 0 },
     { id_q: "Gas dari fotosintesis (6CO₂ + 6H₂O → C₆H₁₂O₆ + ?) adalah...", en_q: "Gas produced by photosynthesis is...", options: ["6CO₂", "6O₂", "6H₂", "6CH₄"], ans: 1 },
     { id_q: "Reaksi HCl + NaOH → NaCl + ? menghasilkan...", en_q: "HCl + NaOH → NaCl + ?", options: ["H₂", "O₂", "H₂O", "CO₂"], ans: 2 },
@@ -124,8 +125,18 @@ const QUESTIONS_DB = {
     { id_q: "Rumus kimia garam dapur adalah...", en_q: "Chemical formula for table salt is...", options: ["KCl", "NaCl", "MgCl₂", "CaCl₂"], ans: 1 },
     { id_q: "Zat yang mengubah kertas lakmus biru menjadi merah bersifat...", en_q: "Substance that turns blue litmus red is...", options: ["Basa", "Netral", "Asam (Acid)", "Garam"], ans: 2 },
     { id_q: "Simbol unsur untuk Kalium adalah...", en_q: "Chemical symbol for Potassium is...", options: ["Ka", "K", "Pt", "Po"], ans: 1 },
+    // Space / Astronomy
+    { id_q: "Planet manakah yang dikenal sebagai 'Planet Merah'?", en_q: "Which planet is known as the 'Red Planet'?", options: ["Venus", "Mars", "Jupiter", "Saturnus"], ans: 1 },
+    { id_q: "Pusat dari Tata Surya kita adalah...", en_q: "The center of our Solar System is...", options: ["Bumi/Earth", "Matahari/Sun", "Bulan/Moon", "Bima Sakti"], ans: 1 },
+    { id_q: "Planet terbesar di Tata Surya kita adalah...", en_q: "The largest planet in our Solar System is...", options: ["Saturnus", "Uranus", "Neptunus", "Jupiter"], ans: 3 },
+    { id_q: "Gaya yang menahan planet-planet tetap di orbitnya adalah...", en_q: "The force that keeps planets in orbit is...", options: ["Magnetisme", "Gravitasi/Gravity", "Gesekan", "Sentrifugal"], ans: 1 },
+    { id_q: "Galaksi tempat Bumi berada dinamakan...", en_q: "The galaxy where Earth is located is called...", options: ["Andromeda", "Triangulum", "Bima Sakti/Milky Way", "Orion"], ans: 2 },
+    { id_q: "Matahari utamanya terdiri dari dua unsur gas, yaitu...", en_q: "The Sun is primarily made of two gases...", options: ["Oksigen & Karbon", "Hidrogen & Helium", "Nitrogen & Hidrogen", "Helium & Argon"], ans: 1 },
+    { id_q: "Benda langit yang mengeluarkan cahaya sendiri disebut...", en_q: "A celestial body that emits its own light is a...", options: ["Planet", "Satelit", "Komet", "Bintang/Star"], ans: 3 },
+    { id_q: "Jarak yang ditempuh cahaya dalam satu tahun disebut...", en_q: "The distance light travels in one year is...", options: ["Tahun Kabisat", "Tahun Cahaya/Light Year", "Parsec", "Kecepatan Warp"], ans: 1 }
   ],
   tf: [
+    // Chemistry
     { id_q: "Air raksa (Hg) berwujud cair pada suhu ruang.", en_q: "Mercury (Hg) is liquid at room temp.", ans: true },
     { id_q: "Proton bermuatan negatif.", en_q: "Proton has a negative charge.", ans: false },
     { id_q: "Oksigen adalah gas paling melimpah di atmosfer bumi.", en_q: "Oxygen is the most abundant gas in Earth's atmosphere.", ans: false }, 
@@ -136,8 +147,16 @@ const QUESTIONS_DB = {
     { id_q: "Es mencair adalah perubahan kimia.", en_q: "Melting ice is a chemical change.", ans: false },
     { id_q: "Karbon monoksida (CO) beracun bagi manusia.", en_q: "Carbon monoxide is toxic to humans.", ans: true },
     { id_q: "Air adalah pelarut universal.", en_q: "Water is a universal solvent.", ans: true },
+    // Space / Astronomy
+    { id_q: "Matahari adalah sebuah bintang.", en_q: "The Sun is a star.", ans: true },
+    { id_q: "Bumi adalah planet ketiga dari Matahari.", en_q: "Earth is the third planet from the Sun.", ans: true },
+    { id_q: "Suara bisa merambat dengan jelas di ruang hampa angkasa.", en_q: "Sound can travel clearly in the vacuum of space.", ans: false },
+    { id_q: "Bulan memancarkan cahayanya sendiri.", en_q: "The Moon emits its own light.", ans: false },
+    { id_q: "Pluto saat ini diklasifikasikan sebagai planet katai (dwarf planet).", en_q: "Pluto is currently classified as a dwarf planet.", ans: true },
+    { id_q: "Venus adalah planet terpanas di tata surya.", en_q: "Venus is the hottest planet in the solar system.", ans: true }
   ],
   essay: [
+    // Chemistry
     { id_q: "Tuliskan rumus kimia dari air.", en_q: "Write the chemical formula for water.", ans: ["h2o", "h20"] },
     { id_q: "Apa simbol unsur kimia untuk Emas?", en_q: "What is the chemical symbol for Gold?", ans: ["au"] },
     { id_q: "Zat lakmus biru menjadi merah bersifat...", en_q: "Substance turning blue litmus red is...", ans: ["asam", "acid", "acidic"] },
@@ -146,12 +165,21 @@ const QUESTIONS_DB = {
     { id_q: "Apa rumus kimia Karbon Dioksida?", en_q: "Formula for Carbon Dioxide?", ans: ["co2", "co 2"] },
     { id_q: "Pusat dari sebuah atom disebut...", en_q: "The center of an atom is called...", ans: ["inti", "inti atom", "nucleus"] },
     { id_q: "Gas yang kita hirup untuk hidup...", en_q: "Gas we breathe to live...", ans: ["oksigen", "oxygen", "o2"] },
+    // Space / Astronomy
+    { id_q: "Nama galaksi tempat kita tinggal adalah...", en_q: "The name of our galaxy is...", ans: ["bima sakti", "milky way"] },
+    { id_q: "Bintang yang menjadi pusat tata surya kita...", en_q: "The star at the center of our solar system...", ans: ["matahari", "sun"] },
+    { id_q: "Satelit alami yang mengelilingi Bumi adalah...", en_q: "The natural satellite orbiting Earth is...", ans: ["bulan", "moon"] },
+    { id_q: "Planet terdekat dengan Matahari adalah...", en_q: "The closest planet to the Sun is...", ans: ["merkurius", "mercury"] }
   ],
   matching: [
+    // Chemistry
     { id_q: "Jodohkan Unsur/Simbol", en_q: "Match Element/Symbol", pairs: [ { left: "Natrium", right: "Na" }, { left: "Kalium", right: "K" }, { left: "Besi", right: "Fe" }, { left: "Perak", right: "Ag" } ] },
     { id_q: "Jodohkan Istilah", en_q: "Match Terms", pairs: [ { left: "Kation", right: "Positif" }, { left: "Anion", right: "Negatif" }, { left: "Katalis", right: "Cepat" } ] },
     { id_q: "Jodohkan Asam/Basa", en_q: "Match Acid/Base", pairs: [ { left: "HCl", right: "Asam Kuat" }, { left: "NaOH", right: "Basa Kuat" }, { left: "CH3COOH", right: "Asam Lemah" } ] },
     { id_q: "Jodohkan Fase", en_q: "Match Phase", pairs: [ { left: "Solid (s)", right: "Padat" }, { left: "Aqueous (aq)", right: "Larutan" }, { left: "Gas (g)", right: "Gas" } ] },
+    // Space / Astronomy
+    { id_q: "Jodohkan Planet & Cirinya", en_q: "Match Planet & Trait", pairs: [ { left: "Mars", right: "Si Merah" }, { left: "Jupiter", right: "Terbesar" }, { left: "Bumi", right: "Bisa Dihuni" }, { left: "Saturnus", right: "Bercincin" } ] },
+    { id_q: "Jodohkan Objek Angkasa", en_q: "Match Space Objects", pairs: [ { left: "Matahari", right: "Bintang" }, { left: "Bulan", right: "Satelit Alami" }, { left: "Bima Sakti", right: "Galaksi" } ] }
   ]
 };
 
@@ -228,28 +256,6 @@ const playSFX = (type, isMuted) => {
   }
 };
 
-const toggleBGM = (play) => {
-  if (!audioCtx) return;
-  if (play) {
-    if (bgmOscillator) return; 
-    bgmOscillator = audioCtx.createOscillator(); bgmGain = audioCtx.createGain();
-    bgmOscillator.type = 'sine'; bgmOscillator.frequency.value = 65; 
-    const lfo = audioCtx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.2; 
-    const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 0.05; 
-    lfo.connect(lfoGain); lfoGain.connect(bgmGain.gain);
-    bgmGain.gain.value = 0.05; 
-    bgmOscillator.connect(bgmGain); bgmGain.connect(audioCtx.destination);
-    bgmOscillator.start(); lfo.start();
-  } else {
-    if (bgmOscillator) {
-      bgmGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
-      setTimeout(() => { if(bgmOscillator) { bgmOscillator.stop(); bgmOscillator.disconnect(); bgmOscillator = null; } }, 1000);
-    }
-  }
-};
-
-const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
-
 export default function App() {
   const [gameState, setGameState] = useState('MENU'); 
   const [showMap, setShowMap] = useState(false);
@@ -310,11 +316,13 @@ export default function App() {
   const logContainerRef = useRef(null);
   const bgmRef = useRef(null);
 
+  const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
+
   useEffect(() => { if (logContainerRef.current) logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight; }, [logs]);
   
   // Audio Initialization & MP3 Loop
   useEffect(() => {
-    // 💡 PERBAIKAN 1: Kita panggil langsung dari root public (/bgm.mp3)
+    // Kita panggil langsung dari root public (/bgm.mp3)
     bgmRef.current = new Audio('/bgm.mp3');
     bgmRef.current.loop = true;
     bgmRef.current.volume = 0.3; // Volume BGM diatur 30% agar tidak menutupi SFX
@@ -331,7 +339,7 @@ export default function App() {
   useEffect(() => {
     if (!bgmRef.current) return;
     
-    // 💡 PERBAIKAN 2: Mainkan musik kapan pun selama tidak di-mute
+    // Mainkan musik kapan pun selama tidak di-mute
     if (!isBgmMuted) {
       // Kita harus "menangkap" Promise dari play() untuk mencegah error Autoplay Policy
       const playPromise = bgmRef.current.play();
@@ -398,11 +406,11 @@ export default function App() {
     if (!currentQuestion) return;
     setIsHintLoading(true); playSFX('buff', isMuted);
     let qText = lang === 'id' ? currentQuestion.data.id_q : currentQuestion.data.en_q;
-    if (currentQuestion.type === 'matching') qText = lang === 'id' ? "Jodohkan istilah kimia ini." : "Match these chemical terms.";
-    const prompt = `Sebagai Alkemis, berikan 1 kalimat petunjuk (maks 20 kata) tanpa menyebut jawaban langsung. Pertanyaan: "${qText}". Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
+    if (currentQuestion.type === 'matching') qText = lang === 'id' ? "Jodohkan istilah kimia/astronomi ini." : "Match these chemical/astronomy terms.";
+    const prompt = `Sebagai ilmuwan, berikan 1 kalimat petunjuk (maks 20 kata) tanpa menyebut jawaban langsung. Pertanyaan: "${qText}". Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}.`;
     const hint = await fetchWithBackoff(prompt);
     if (hint) { setAlchemistHint(hint.replace(/"/g, '').trim()); playSFX('heal', isMuted); } 
-    else { setAlchemistHint(lang==='id'?"Aura sihir terganggu...":"Magic aura disrupted..."); playSFX('error', isMuted); }
+    else { setAlchemistHint(lang==='id'?"Koneksi terganggu...":"Connection disrupted..."); playSFX('error', isMuted); }
     setIsHintLoading(false);
   };
 
@@ -973,49 +981,49 @@ export default function App() {
         </div>
 
         {/* BATTLE STAGE */}
-        <div className="flex-1 overflow-y-auto w-full relative z-20 min-h-0 custom-scrollbar">
-          
-          <div className="sticky top-0 z-30 w-full max-w-sm mx-auto bg-[#050505]/95 backdrop-blur-md pt-2 pb-3 mb-2 md:mb-4 rounded-b-2xl md:rounded-b-3xl border-b border-[#222] shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
-            <div className="px-4 md:px-6 w-full">
-              <div className="flex justify-between text-[9px] md:text-[10px] text-slate-400 font-black mb-1 uppercase tracking-widest">
+        <div className="flex-1 overflow-y-auto w-full relative z-20 min-h-0 custom-scrollbar bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/20 via-[#050505] to-[#050505]">
+          <div className="min-h-full flex flex-col items-center justify-center py-4 md:py-8 px-2 w-full max-w-sm mx-auto relative gap-4 md:gap-8">
+            
+            {/* Sticky Enemy HP Bar - Always visible */}
+            <div className="sticky top-0 z-30 w-full max-w-sm bg-[#050505]/90 backdrop-blur-md pt-2 pb-4 mb-2 rounded-b-xl border-b border-[#111] shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+              <div className="flex justify-between text-[10px] md:text-xs text-slate-400 font-black mb-1.5 px-1 uppercase tracking-widest">
                  <span>HP {enemy?.name}</span><span className="text-white">{enemy?.hp}/{enemy?.maxHp}</span>
               </div>
-              <div className="w-full bg-[#111] border border-[#222] h-3 md:h-4 rounded-full overflow-hidden p-[2px] shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
+              <div className="w-full bg-[#111] border border-[#222] h-4 rounded-full overflow-hidden p-[2px] shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
                 <div className="bg-gradient-to-r from-green-600 via-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_15px_rgba(52,211,153,0.6)]" style={{ width: `${((enemy?.hp || 0) / (enemy?.maxHp || 1)) * 100}%` }}></div>
               </div>
             </div>
-          </div>
 
-          <div className="min-h-full flex flex-col items-center justify-center py-4 md:py-8 px-2 w-full max-w-sm mx-auto relative gap-4 md:gap-8">
-            
-            <div className="flex flex-col items-center w-full relative shrink-0">
-              <div className="text-center mb-2 md:mb-3 bg-[#0a0a0a]/50 backdrop-blur-sm p-2 md:p-3 rounded-xl md:rounded-2xl border border-[#222] shadow-xl">
-                <h2 className="text-xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg"><span className="text-lg md:text-2xl drop-shadow-none">👺</span> {enemy?.name}</h2>
+            {/* ENEMY */}
+            <div className="flex flex-col items-center w-full max-w-sm mb-4 relative shrink-0">
+              <div className="text-center mb-3 bg-[#0a0a0a]/50 backdrop-blur-sm p-3 rounded-2xl border border-[#222] shadow-xl">
+                <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600 flex items-center justify-center gap-2 drop-shadow-lg"><span className="text-xl md:text-2xl drop-shadow-none">👺</span> {enemy?.name}</h2>
               </div>
               
-              <div className={`text-[70px] sm:text-[80px] md:text-[100px] leading-none mb-4 md:mb-6 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative ${animState.enemy}`}>
-                <div className="absolute inset-0 bg-green-500/20 blur-[30px] rounded-full -z-10"></div>
+              <div className={`text-[80px] md:text-[100px] leading-none mb-2 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] animate-float relative ${animState.enemy}`}>
+                <div className="absolute inset-0 bg-green-500/20 blur-[40px] rounded-full -z-10"></div>
                 {enemy?.emoji}
               </div>
             </div>
 
-            <div className="text-2xl md:text-4xl font-black text-[#1a1a1a] select-none drop-shadow-lg opacity-50 shrink-0">VS</div>
+            <div className="text-3xl md:text-4xl font-black text-[#1a1a1a] my-2 select-none drop-shadow-lg opacity-50 shrink-0">VS</div>
 
-            <div className="flex flex-col items-center w-full relative shrink-0">
-              <div className={`mb-3 md:mb-4 relative w-24 h-24 md:w-32 md:h-32 ${animState.player}`}>
-                <div className="absolute inset-0 bg-blue-500/10 blur-[30px] rounded-full -z-10"></div>
+            {/* PLAYER */}
+            <div className="flex flex-col items-center w-full max-w-sm mt-4 relative shrink-0">
+              <div className={`mb-4 relative w-24 h-24 md:w-32 md:h-32 ${animState.player}`}>
+                <div className="absolute inset-0 bg-blue-500/10 blur-[40px] rounded-full -z-10"></div>
                 <Avatar p={player} animated={!animState.player.includes('transform')} />
               </div>
               
-              <h2 className="text-lg md:text-2xl font-black text-white mb-3 md:mb-4 drop-shadow-xl tracking-widest uppercase">{player.name}</h2>
+              <h2 className="text-xl md:text-2xl font-black text-white mb-4 drop-shadow-xl tracking-widest uppercase">{player.name}</h2>
               
               <div className="w-full relative px-2">
-                <div className="flex justify-between text-[9px] md:text-[10px] text-slate-400 font-black mb-1 uppercase tracking-widest"><span>HP Pahlawan</span><span className="text-white">{player.hp}/{totalStats.maxHp}</span></div>
-                <div className="w-full bg-[#111] border border-[#222] h-3 md:h-4 rounded-full overflow-hidden p-[2px] shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
+                <div className="flex justify-between text-[10px] text-slate-400 font-black mb-1.5 px-1 uppercase tracking-widest"><span>HP Pahlawan</span><span className="text-white">{player.hp}/{totalStats.maxHp}</span></div>
+                <div className="w-full bg-[#111] border border-[#222] h-4 rounded-full overflow-hidden p-[2px] shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
                   <div className="bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_15px_rgba(59,130,246,0.6)]" style={{ width: `${(player.hp / totalStats.maxHp) * 100}%` }}></div>
                 </div>
-                <div className="text-center text-xs md:text-sm font-black mt-2 md:mt-3 flex items-center justify-center gap-1.5 md:gap-2 bg-[#111]/80 backdrop-blur-sm border border-[#333] py-1.5 md:py-2 px-4 md:px-6 rounded-xl md:rounded-2xl w-max mx-auto shadow-xl">
-                  <Sword size={14} className="text-orange-500 animate-pulse-slow" /> DMG: <span className="text-orange-400 text-base md:text-lg">{totalStats.dmg}</span>
+                <div className="text-center text-sm font-black mt-3 flex items-center justify-center gap-2 bg-[#111]/80 backdrop-blur-sm border border-[#333] py-2 px-6 rounded-2xl w-max mx-auto shadow-xl">
+                  <Sword size={16} className="text-orange-500 animate-pulse-slow" /> DMG: <span className="text-orange-400 text-lg">{totalStats.dmg}</span>
                 </div>
               </div>
             </div>
@@ -1024,20 +1032,20 @@ export default function App() {
         </div>
 
         {/* Action Bar */}
-        <div className="w-full bg-[#0a0a0a]/95 backdrop-blur-2xl border-t border-[#1a1a1a] p-2 md:p-5 flex flex-col items-center gap-2 md:gap-3 z-30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] relative">
-          <button onMouseEnter={handleHover} onClick={triggerAttack} disabled={showQuestionModal} className="w-full max-w-xs bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 hover:from-orange-500 hover:to-red-400 text-white font-black py-2.5 md:py-3 rounded-xl md:rounded-2xl shadow-[0_10px_30px_rgba(234,88,12,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-1 flex justify-center items-center gap-2 text-base md:text-lg disabled:opacity-50 disabled:cursor-not-allowed group uppercase tracking-widest relative overflow-hidden bg-[length:200%_auto] hover:bg-right shrink-0">
-            <Sword size={18} className="group-hover:rotate-12 transition-transform duration-300"/> {t('atk')}
+        <div className="w-full bg-[#0a0a0a]/95 backdrop-blur-2xl border-t border-[#1a1a1a] p-3 md:p-5 flex flex-col items-center gap-3 z-30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] relative">
+          <button onMouseEnter={handleHover} onClick={triggerAttack} disabled={showQuestionModal} className="w-full max-w-xs bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 hover:from-orange-500 hover:to-red-400 text-white font-black py-3 rounded-2xl shadow-[0_10px_30px_rgba(234,88,12,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-1 flex justify-center items-center gap-2 text-lg disabled:opacity-50 disabled:cursor-not-allowed group uppercase tracking-widest relative overflow-hidden bg-[length:200%_auto] hover:bg-right shrink-0">
+            <Sword size={20} className="group-hover:rotate-12 transition-transform duration-300"/> {t('atk')}
           </button>
           
-          <div className="flex gap-2 w-full max-w-3xl overflow-x-auto custom-scrollbar pb-1 md:pb-2 px-2 justify-center shrink-0">
-            <button onMouseEnter={handleHover} onClick={triggerClassSkill} disabled={cooldowns.classSkill > 0 || showQuestionModal} className={`px-2 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black border transition-all duration-300 flex items-center gap-1 md:gap-2 whitespace-nowrap active:scale-95 shadow-md uppercase tracking-widest shrink-0 ${cooldowns.classSkill > 0 ? 'bg-[#111] border-[#222] text-slate-600' : 'bg-[#111] border-blue-900/50 hover:bg-blue-900/30 hover:border-blue-500 hover:-translate-y-1 text-blue-400'}`}>
-               <Zap size={12} className={cooldowns.classSkill === 0 ? "animate-pulse" : ""}/> {CLASSES[player.className].classSkill.name} 
+          <div className="flex gap-2 w-full max-w-3xl overflow-x-auto custom-scrollbar pb-2 px-2 justify-center shrink-0">
+            <button onMouseEnter={handleHover} onClick={triggerClassSkill} disabled={cooldowns.classSkill > 0 || showQuestionModal} className={`px-4 py-2 rounded-xl text-[10px] md:text-xs font-black border transition-all duration-300 flex items-center gap-2 whitespace-nowrap active:scale-95 shadow-lg uppercase tracking-widest shrink-0 ${cooldowns.classSkill > 0 ? 'bg-[#111] border-[#222] text-slate-600' : 'bg-[#111] border-blue-900/50 hover:bg-blue-900/30 hover:border-blue-500 hover:-translate-y-1 text-blue-400'}`}>
+               <Zap size={14} className={cooldowns.classSkill === 0 ? "animate-pulse" : ""}/> {CLASSES[player.className].classSkill.name} 
                {cooldowns.classSkill > 0 && <span className="ml-1 px-1.5 py-0.5 bg-[#050505] border border-red-900 rounded-lg text-red-500">{cooldowns.classSkill}</span>}
             </button>
             {player.skills.map(s => {
-              if (s.isPassive) return <div key={s.id} className="px-2 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl text-[8px] md:text-[9px] bg-[#111] border border-[#222] text-yellow-600 flex items-center gap-1 whitespace-nowrap opacity-80 shadow-inner font-black uppercase tracking-widest shrink-0"><Shield size={10}/> {s.name}</div>;
-              return <button key={s.id} onMouseEnter={handleHover} onClick={() => activateGeneralSkill(s.id)} disabled={cooldowns[s.id] > 0 || showQuestionModal} className={`px-2 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black border transition-all duration-300 flex items-center gap-1 md:gap-2 whitespace-nowrap active:scale-95 shadow-md uppercase tracking-widest shrink-0 ${cooldowns[s.id] > 0 ? 'bg-[#111] border-[#222] text-slate-600' : 'bg-[#111] border-[#333] hover:bg-[#222] hover:border-orange-500 hover:-translate-y-1 text-slate-300'}`}>
-                <ArrowUpCircle size={12}/> {s.name}
+              if (s.isPassive) return <div key={s.id} className="px-4 py-2 rounded-xl text-[9px] md:text-[10px] bg-[#111] border border-[#222] text-yellow-600 flex items-center gap-1 whitespace-nowrap opacity-80 shadow-inner font-black uppercase tracking-widest shrink-0"><Shield size={12}/> {s.name}</div>;
+              return <button key={s.id} onMouseEnter={handleHover} onClick={() => activateGeneralSkill(s.id)} disabled={cooldowns[s.id] > 0 || showQuestionModal} className={`px-4 py-2 rounded-xl text-[10px] md:text-xs font-black border transition-all duration-300 flex items-center gap-2 whitespace-nowrap active:scale-95 shadow-lg uppercase tracking-widest shrink-0 ${cooldowns[s.id] > 0 ? 'bg-[#111] border-[#222] text-slate-600' : 'bg-[#111] border-[#333] hover:bg-[#222] hover:border-orange-500 hover:-translate-y-1 text-slate-300'}`}>
+                <ArrowUpCircle size={14}/> {s.name}
                 {cooldowns[s.id] > 0 && <span className="ml-1 px-1.5 py-0.5 bg-[#050505] border border-red-900 rounded-lg text-red-500">{cooldowns[s.id]}</span>}
               </button>;
             })}
@@ -1373,23 +1381,115 @@ export default function App() {
 
       {/* Game Over / Win Modals */}
       {gameState === 'LOSE' && (
-        <div className="fixed inset-0 bg-red-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 z-[120] animate-pop-in">
-          <Skull size={60} className="text-red-500 mb-4 md:mb-6 animate-pulse drop-shadow-[0_0_40px_rgba(239,68,68,0.6)] shrink-0" />
-          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 mb-6 md:mb-8 tracking-widest drop-shadow-2xl text-center shrink-0">{t('lose')}</h1>
-          <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm shrink-0">
-             <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('stats')}</button>
-             <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-red-600/10 border border-red-600 text-red-500 hover:bg-red-600 hover:text-white font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.2)] transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('tryAgain')}</button>
+        <div className="fixed inset-0 bg-red-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 z-[120] animate-pop-in overflow-y-auto custom-scrollbar">
+          <div className="flex flex-col items-center justify-center min-h-full py-10">
+             <Skull size={60} className="text-red-500 mb-4 md:mb-6 animate-pulse drop-shadow-[0_0_40px_rgba(239,68,68,0.6)] shrink-0" />
+             <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 mb-2 md:mb-4 tracking-widest drop-shadow-2xl text-center shrink-0">{t('lose')}</h1>
+             <p className="text-slate-300 text-sm md:text-lg mb-6 md:mb-8 text-center max-w-sm font-bold shrink-0">Pahlawan <span className="text-white">{player.name}</span> telah gugur di tangan {enemy?.name}.</p>
+             
+             {/* SUMMARY CARD */}
+             <div className="w-full max-w-md bg-[#0a0a0a]/80 backdrop-blur-md border border-red-900/30 rounded-2xl md:rounded-3xl p-5 md:p-8 mb-8 shrink-0 shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 to-red-500"></div>
+                <h3 className="text-center text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-5 border-b border-[#222] pb-3">{t('summary')}</h3>
+                
+                <div className="grid grid-cols-2 gap-3 md:gap-4 mb-5">
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222]">
+                      <Target className="text-blue-400 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.qAnswered > 0 ? Math.round((stats.qCorrect / stats.qAnswered)*100) : 0}%</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('accuracy')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222]">
+                      <Skull className="text-red-500 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.enemiesDefeated}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('enemiesDef')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222]">
+                      <Flame className="text-orange-500 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.highestDmg}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('maxDmg')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222]">
+                      <Trophy className="text-yellow-400 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{unlockedAchs.length}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('achEarned')}</span>
+                   </div>
+                </div>
+
+                {unlockedAchs.length > 0 && (
+                  <div className="flex flex-col items-center pt-2">
+                     <span className="text-[8px] md:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3">{t('achEarned')}:</span>
+                     <div className="flex gap-2 flex-wrap justify-center">
+                        {unlockedAchs.map(achId => {
+                          const ach = ACHIEVEMENTS_LIST.find(a => a.id === achId);
+                          return <div key={ach.id} className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1a1a1a] to-[#050505] border border-[#333] rounded-full flex items-center justify-center text-lg md:text-xl shadow-inner hover:scale-110 transition-transform" title={loc(ach.name)}>{ach.icon}</div>
+                        })}
+                     </div>
+                  </div>
+                )}
+             </div>
+
+             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md shrink-0">
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="w-full bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('stats')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="w-full bg-red-600/10 border border-red-600 text-red-500 hover:bg-red-600 hover:text-white font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.2)] transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('tryAgain')}</button>
+             </div>
           </div>
         </div>
       )}
 
       {gameState === 'WIN' && (
-        <div className="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 z-[120] animate-pop-in relative overflow-hidden">
-          <div className="text-[80px] md:text-[140px] mb-4 md:mb-6 drop-shadow-[0_0_80px_rgba(234,179,8,1)] animate-bounce-slow relative z-10 shrink-0">👑</div>
-          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-orange-500 mb-8 md:mb-10 text-center tracking-widest drop-shadow-2xl relative z-10 shrink-0">{t('win')}</h1>
-          <div className="flex flex-col sm:flex-row gap-3 relative z-10 w-full max-w-md shrink-0">
-             <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="flex-1 bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
-             <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_20px_40px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
+        <div className="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 z-[120] animate-pop-in overflow-y-auto custom-scrollbar">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-transparent to-transparent pointer-events-none"></div>
+          
+          <div className="flex flex-col items-center justify-center min-h-full py-10 w-full relative z-10">
+             <div className="text-[80px] md:text-[120px] mb-2 md:mb-4 drop-shadow-[0_0_80px_rgba(234,179,8,1)] animate-bounce-slow shrink-0">👑</div>
+             <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-orange-500 mb-2 md:mb-4 text-center tracking-widest drop-shadow-2xl shrink-0">{t('win')}</h1>
+             <p className="text-slate-300 text-sm md:text-lg mb-6 md:mb-8 text-center max-w-md leading-relaxed font-bold shrink-0">Pahlawan <span className="text-white text-base md:text-xl mx-1">{player.name}</span> berhasil menaklukkan kegelapan!</p>
+             
+             {/* SUMMARY CARD */}
+             <div className="w-full max-w-md bg-[#0a0a0a]/80 backdrop-blur-md border border-yellow-900/50 rounded-2xl md:rounded-3xl p-5 md:p-8 mb-8 shrink-0 shadow-[0_15px_40px_rgba(234,179,8,0.2)] relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-600 to-orange-400"></div>
+                <h3 className="text-center text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-5 border-b border-[#222] pb-3">{t('summary')}</h3>
+                
+                <div className="grid grid-cols-2 gap-3 md:gap-4 mb-5">
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222] hover:border-yellow-500/50 transition-colors">
+                      <Target className="text-blue-400 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.qAnswered > 0 ? Math.round((stats.qCorrect / stats.qAnswered)*100) : 0}%</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('accuracy')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222] hover:border-yellow-500/50 transition-colors">
+                      <Skull className="text-red-500 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.enemiesDefeated}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('enemiesDef')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222] hover:border-yellow-500/50 transition-colors">
+                      <Flame className="text-orange-500 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{stats.highestDmg}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('maxDmg')}</span>
+                   </div>
+                   <div className="flex flex-col items-center p-3 bg-[#111] rounded-xl border border-[#222] hover:border-yellow-500/50 transition-colors">
+                      <Trophy className="text-yellow-400 mb-1.5" size={18}/>
+                      <span className="text-xl md:text-2xl font-black text-white">{unlockedAchs.length}</span>
+                      <span className="text-[8px] md:text-[9px] text-slate-500 uppercase font-bold tracking-widest mt-1">{t('achEarned')}</span>
+                   </div>
+                </div>
+
+                {unlockedAchs.length > 0 && (
+                  <div className="flex flex-col items-center pt-2">
+                     <span className="text-[8px] md:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3">{t('achEarned')}:</span>
+                     <div className="flex gap-2 flex-wrap justify-center">
+                        {unlockedAchs.map(achId => {
+                          const ach = ACHIEVEMENTS_LIST.find(a => a.id === achId);
+                          return <div key={ach.id} className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1a1a1a] to-[#050505] border border-yellow-900/50 rounded-full flex items-center justify-center text-lg md:text-xl shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:scale-110 transition-transform" title={loc(ach.name)}>{ach.icon}</div>
+                        })}
+                     </div>
+                  </div>
+                )}
+             </div>
+
+             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md shrink-0">
+                <button onMouseEnter={handleHover} onClick={() => {handleClick(); setShowStats(true);}} className="flex-1 bg-[#111] border border-[#333] text-slate-300 hover:bg-[#222] hover:text-white font-black py-3 md:py-4 px-6 rounded-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 uppercase tracking-widest shadow-lg text-xs md:text-sm shrink-0">{t('stats')}</button>
+                <button onMouseEnter={handleHover} onClick={() => {playSFX('victory', isMuted); setGameState('MENU');}} className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-black py-3 md:py-4 px-6 rounded-xl shadow-[0_15px_30px_rgba(234,179,8,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest text-xs md:text-sm shrink-0">{t('playAgain')}</button>
+             </div>
           </div>
         </div>
       )}
