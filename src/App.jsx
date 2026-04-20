@@ -807,7 +807,7 @@ export default function App() {
         <div className="relative z-10 flex flex-col items-center animate-pop-in px-4 w-full">
           <div className="text-5xl md:text-7xl mb-4 animate-float"><FlaskIcon /></div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 mb-2 md:mb-4 tracking-widest drop-shadow-[0_10px_10px_rgba(234,88,12,0.5)] uppercase animate-shine bg-[length:200%_auto] text-center">
-            Chem Legend Of RPG
+            Kill The Demon King!
           </h1>
           <div className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8 md:mb-12 drop-shadow-md text-center">
             GAME MADE BY IRDY(25) dan FALAN(09)
